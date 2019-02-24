@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="urn:Test.Namespace"
+            xmlns="urn:Test.Namespace">
+
+  <xs:complexType name="crop">
+    <xs:sequence>
+      <xs:element name="id" type="xs:ID" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="binomialName" type="xs:string" minOccurs="0"/>
+      <xs:element name="Description" type="xs:string" minOccurs="0"/>
+      <xs:element name="sunRequirement" type="sunType" minOccurs="0"/>
+      <xs:element name="sowingMethod" type="xs:string" minOccurs="0"/>
+      <xs:element name="spread" type="xs:double" minOccurs="0"/>
+      <xs:element name="rowSpacing" type="xs:double" minOccurs="0"/>
+      <xs:element name="height" type="xs:double" minOccurs="0"/>
+      <xs:element name="helps" type="xs:IDREF" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="helpedBy" type="xs:IDREF" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="avoid" type="xs:IDREF" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="sunType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="FULLSUN"/>
+      <xs:enumeration value="PARTIALSUN"/>
+      <xs:enumeration value="FULLSHADE"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
