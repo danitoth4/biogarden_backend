@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<crop>
+    <id>e6c69150-81e1-43cc-b245-0ffcf2f2d24f</id>
+    <name>Tomato</name>
+    <binomialName>Solanum lycopersicum</binomialName>
+    <Description>The tomato is the fruit of the tomato plant, a member of the Nightshade family (Solanaceae). The fruit grows on a sprawling vine that is often trellised or caged to keep it upright. There are many kinds of tomatoes, including conventional, hybrid, heirloom, plum, grape, and cherry. Determinate or bush varieties do not need pruning and can be grown without trellises or cages. Indeterminate or climbing varieties benefit from pruning and should be trellised, caged, or staked.</Description>
+    <sunRequirement>FULLSUN</sunRequirement>
+    <sowingMethod>Direct seed indoors, transplant seedlings outside after hardening off</sowingMethod>
+    <spread>60.0</spread>
+    <rowSpacing>75.0</rowSpacing>
+    <height>90.0</height>
+</crop>
