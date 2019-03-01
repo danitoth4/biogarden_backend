@@ -4,7 +4,7 @@ import java.util.Map;
 
 public interface Plantable {
 
-    public int plant(Map<Direction ,PlantedCrop> neighbours);
+    public int plant(Map<Direction , ConcreteCrop> neighbours);
 
     public double getWidth();
 

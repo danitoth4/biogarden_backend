@@ -1,14 +1,15 @@
 package model;
 
+import javax.persistence.*;
 import java.util.*;
-import javax.xml.bind.annotation.*;
 
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
+@Entity
+@Table( name = "Crops")
 public class Crop {
 
-    @XmlID
-    private String id = UUID.randomUUID().toString();
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     private String name;
 
@@ -20,31 +21,29 @@ public class Crop {
 
     private String sowingMethod;
 
-    private Double spread;
+    private Double diameter;
 
     private Double rowSpacing;
 
     private Double height;
 
 
-
-    @XmlIDREF
     private List<Crop> helps = new ArrayList<>();
 
-    @XmlIDREF
     private List<Crop> helpedBy = new ArrayList<>();
 
-    @XmlIDREF
     private List<Crop> avoid = new ArrayList<>();
 
     public Crop()
-    {}
+    {
 
-    public String getId() {
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public  void setId(String id) {
+    public  void setId(Long id) {
         this.id = id;
     }
 
@@ -88,12 +87,12 @@ public class Crop {
         this.sowingMethod = sowingMethod;
     }
 
-    public Double getSpread() {
-        return spread;
+    public Double getDiameter() {
+        return diameter;
     }
 
-    public void setSpread(Double spread) {
-        this.spread = spread;
+    public void setDiameter(Double diameter) {
+        this.diameter = diameter;
     }
 
     public Double getRowSpacing() {

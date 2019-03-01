@@ -13,7 +13,7 @@ public class CropController
     @RequestMapping("/crop")
     public ArrayList<Crop> getCrops()
     {
-        ArrayList<Crop> crops = new ArrayList<Crop>();
+        ArrayList<Crop> crops = new ArrayList<>();
         return crops;
     }
 
