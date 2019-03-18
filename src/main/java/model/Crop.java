@@ -1,15 +1,21 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
 import java.util.*;
 
 @Entity
 @Table( name = "Crops")
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Crop {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @JsonProperty("id")
+    private Short id;
 
     private String name;
 
@@ -21,29 +27,34 @@ public class Crop {
 
     private String sowingMethod;
 
-    private Double diameter;
+    private Float diameter;
 
-    private Double rowSpacing;
+    private Float rowSpacing;
 
-    private Double height;
+    private Float height;
 
 
-    private List<Crop> helps = new ArrayList<>();
+    @ManyToMany
+    private Set<Crop> helps = new HashSet<>();
 
-    private List<Crop> helpedBy = new ArrayList<>();
+    @ManyToMany(mappedBy = "helps")
+    private Set<Crop> helpedBy = new HashSet<>();
 
-    private List<Crop> avoid = new ArrayList<>();
+    @ManyToMany
+    private Set<Crop> avoids = new HashSet<>();
+
 
     public Crop()
     {
 
     }
 
-    public Long getId() {
+
+    public Short getId() {
         return id;
     }
 
-    public  void setId(Long id) {
+    public  void setId(Short id) {
         this.id = id;
     }
 
@@ -87,52 +98,51 @@ public class Crop {
         this.sowingMethod = sowingMethod;
     }
 
-    public Double getDiameter() {
+    public Float getDiameter() {
         return diameter;
     }
 
-    public void setDiameter(Double diameter) {
+    public void setDiameter(Float diameter) {
         this.diameter = diameter;
     }
 
-    public Double getRowSpacing() {
+    public Float getRowSpacing() {
         return rowSpacing;
     }
 
-    public void setRowSpacing(Double rowSpacing) {
+    public void setRowSpacing(Float rowSpacing) {
         this.rowSpacing = rowSpacing;
     }
 
-    public Double getHeight() {
+    public Float getHeight() {
         return height;
     }
 
-    public void setHeight(Double height) {
+    public void setHeight(Float height) {
         this.height = height;
     }
 
-    public List<Crop> getHelps() {
+    public Set<Crop> getHelps() {
         return helps;
     }
 
-    public void setHelps(List<Crop> helps) {
+    public void setHelps(Set<Crop> helps) {
         this.helps = helps;
     }
 
-    public List<Crop> getHelpedBy() {
+    public Set<Crop> getHelpedBy() {
         return helpedBy;
     }
 
-    public void setHelpedBy(List<Crop> helpedBy) {
+    public void setHelpedBy(Set<Crop> helpedBy) {
         this.helpedBy = helpedBy;
     }
 
-    public List<Crop> getAvoid() {
-        return avoid;
+    public Set<Crop> getAvoids() { return avoids;}
+
+    public void setAvoids(Set<Crop> avoids) {
+        this.avoids = avoids;
     }
 
-    public void setAvoid(List<Crop> avoid) {
-        this.avoid = avoid;
-    }
 
 }

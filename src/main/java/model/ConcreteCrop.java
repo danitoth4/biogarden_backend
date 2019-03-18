@@ -1,20 +1,35 @@
 package model;
 
-import java.awt.geom.Point2D;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.persistence.*;
+import java.awt.*;
 import java.util.*;
 
+
+@Entity
+@Table( name = "ConcreteCrops")
 public class ConcreteCrop {
 
-    private double length;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonProperty("id")
+    private Short id;
 
-    private double width;
+    private Integer length;
 
-    private int preferenceValue;
+    private Integer width;
 
-    private Point2D coordinates;
+    private Short preferenceValue;
+
+    private Point startPoint;
 
     private final Crop cropType;
 
+    /**
+     * Initializes a new ConcreteCrop instance.
+     * @param type The abstract type of the crop.
+     */
     public ConcreteCrop(Crop type)
     {
         cropType = type;

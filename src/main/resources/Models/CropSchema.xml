@@ -16,7 +16,7 @@
       <xs:element name="height" type="xs:double" minOccurs="0"/>
       <xs:element name="helps" type="xs:IDREF" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="helpedBy" type="xs:IDREF" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="avoid" type="xs:IDREF" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="avoids" type="xs:IDREF" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
 

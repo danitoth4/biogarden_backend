@@ -118,9 +118,9 @@ public class ModelManager
                 break;
         }
         newCrop.setSowingMethod(attributes.getString("sowing_method"));
-        newCrop.setDiameter(attributes.getDouble("spread"));
-        newCrop.setRowSpacing(attributes.getDouble("row_spacing"));
-        newCrop.setHeight(attributes.getDouble("height"));
+        newCrop.setDiameter((float)attributes.getDouble("spread"));
+        newCrop.setRowSpacing((float)attributes.getDouble("row_spacing"));
+        newCrop.setHeight((float)attributes.getDouble("height"));
 
         return newCrop;
     }

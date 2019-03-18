@@ -1,0 +1,2 @@
+INSERT INTO CROPS (ID, NAME)
+VALUES (2, 'Carrot');
