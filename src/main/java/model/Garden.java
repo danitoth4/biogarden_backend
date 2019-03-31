@@ -1,6 +1,9 @@
 package model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.awt.*;
 import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.geom.Point2D;
@@ -11,6 +14,10 @@ import java.util.Map;
 @Entity
 public class Garden
 {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
     public static final int cellSize = 5;
 
@@ -29,9 +36,9 @@ public class Garden
         length = l;
         width = w;
 
-        for(int i = 0; i < length / 5; ++i)
+        for(int i = 0; i < length / cellSize; ++i)
         {
-            for (int j = 0; j < width / 5; ++j)
+            for (int j = 0; j < width / cellSize; ++j)
             {
                 plantedCrops.put(new Point(i, j), null);
 
@@ -46,6 +53,47 @@ public class Garden
     public void setPlantedCrops(HashMap<Point, ConcreteCrop> plantedCrops) {
         this.plantedCrops = plantedCrops;
     }
+
+    public GardenType getGardenType()
+    {
+        return gardenType;
+    }
+
+    public void setGardenType(GardenType gardenType)
+    {
+        this.gardenType = gardenType;
+    }
+
+    public SunType getSunType()
+    {
+        return sunType;
+    }
+
+    public void setSunType(SunType sunType)
+    {
+        this.sunType = sunType;
+    }
+
+    public Integer getLength()
+    {
+        return length;
+    }
+
+    public void setLength(Integer length)
+    {
+        this.length = length;
+    }
+
+    public Integer getWidth()
+    {
+        return width;
+    }
+
+    public void setWidth(Integer width)
+    {
+        this.width = width;
+    }
+
 
 
 

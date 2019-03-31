@@ -17,7 +17,7 @@ public class ModelManager
 
     private ArrayList<Crop> cropData = new ArrayList<>();
 
-    private  Garden currentGarden;
+    private  Garden currentGarden = new Garden(200, 200);
 
     private ModelManager()
     {

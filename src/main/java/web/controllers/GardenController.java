@@ -27,9 +27,10 @@ public class GardenController
         return garden;
     }
 
+    /*
     @PutMapping("/garden")
     public Garden putGarden(@RequestBody Garden garden)
     {
         return new Garden();
-    }
+    }*/
 }

@@ -43,6 +43,8 @@ public class Crop {
     @ManyToMany
     private Set<Crop> avoids = new HashSet<>();
 
+    @ManyToMany(mappedBy = "avoids")
+    private Set<Crop> avoidedBy = new HashSet<>();
 
     public Crop()
     {
@@ -145,4 +147,13 @@ public class Crop {
     }
 
 
+    public Set<Crop> getAvoidedBy()
+    {
+        return avoidedBy;
+    }
+
+    public void setAvoidedBy(Set<Crop> avoidedBy)
+    {
+        this.avoidedBy = avoidedBy;
+    }
 }

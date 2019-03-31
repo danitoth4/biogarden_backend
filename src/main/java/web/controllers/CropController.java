@@ -20,13 +20,7 @@ public class CropController {
     public List<Crop> getCrops()
     {
         Iterable<Crop> crops = repository.findAll();
-        for(Crop c : crops)
-        {
-            c.setAvoids(null);
-            c.setHelpedBy(null);
-            c.setHelps(null);
-        }
-        return Lists.newArrayList();
+        return Lists.newArrayList(crops);
     }
 
     @RequestMapping("/crop/{id}")
