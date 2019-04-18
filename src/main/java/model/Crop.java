@@ -33,6 +33,8 @@ public class Crop {
 
     private Float height;
 
+    private String imageUrl;
+
 
     @ManyToMany
     private Set<Crop> helps = new HashSet<>();
@@ -155,5 +157,13 @@ public class Crop {
     public void setAvoidedBy(Set<Crop> avoidedBy)
     {
         this.avoidedBy = avoidedBy;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

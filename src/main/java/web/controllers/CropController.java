@@ -16,6 +16,7 @@ public class CropController {
         repository = cropRepository;
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/crop")
     public List<Crop> getCrops()
     {
