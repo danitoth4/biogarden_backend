@@ -44,7 +44,7 @@ public class CompanionController
                         warning = true;
 
                 }
-                for (Crop c : crop.getHelpedBy())
+                for (Crop c : crop.getHelps())
                 {
                     if (!createAndAddCompanion(true, crop, c))
                         warning = true;
@@ -81,7 +81,7 @@ public class CompanionController
             {
                 if (c.getPositive())
                 {
-                    crop1.getHelpedBy().add(crop2);
+                    crop1.getHelps().add(crop2);
                 } else
                 {
                     crop1.getAvoids().add(crop2);
@@ -93,25 +93,12 @@ public class CompanionController
             {
                 if (c.getPositive())
                 {
-                    crop1.getHelpedBy().remove(crop2);
+                    crop1.getHelps().remove(crop2);
                 } else
                 {
                     crop1.getAvoids().remove(crop2);
                 }
-
-                Companion cmp = new Companion();
-
-                cmp.setCropId1(c.getCropId2());
-                cmp.setCropId2(c.getCropId1());
-
-                cmp.setPositive(!c.getPositive());
-
-                log.info(String.valueOf(cmp.hashCode()));
-                log.info(String.valueOf(c.hashCode()));
-
                 companions.remove(c);
-
-
             }
             repository.save(crop1);
         }
