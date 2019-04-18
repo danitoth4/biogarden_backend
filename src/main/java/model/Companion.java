@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public class Companion {
 
     private Short cropId1;
@@ -41,6 +43,14 @@ public class Companion {
         Companion other = (Companion)o;
 
         return !((!other.cropId1.equals(this.cropId1) && !other.cropId1.equals(this.cropId2)) || (!other.cropId2.equals(this.cropId1) && !other.cropId2.equals(this.cropId2)));
+    }
 
+    @Override
+    public int hashCode()
+    {
+        int h1 = Objects.hash(cropId1, cropId2);
+        int h2 = Objects.hash(cropId2, cropId1);
+
+        return h1 >= h2 ? h1 : h2;
     }
 }
