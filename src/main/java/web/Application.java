@@ -30,11 +30,15 @@ public class Application {
         {
             Crop c = new Crop();
             c.setName("Tomato");
-            repository.save(c);
             for(Crop crop : repository.findAll())
             {
-                log.info(crop.getName());
+                if(crop.getId() == 2)
+                    c.getAvoids().add(crop);
+                else
+                    c.getHelps().add(crop);
             }
+
+            repository.save(c);
         };
 
     }

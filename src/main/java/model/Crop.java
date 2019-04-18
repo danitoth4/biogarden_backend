@@ -1,6 +1,7 @@
 package model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -9,7 +10,7 @@ import java.util.*;
 
 @Entity
 @Table( name = "Crops")
-@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property= "id")
 public class Crop {
 
     @Id
@@ -37,16 +38,23 @@ public class Crop {
 
 
     @ManyToMany
+    @JsonIgnore
     private Set<Crop> helps = new HashSet<>();
 
     @ManyToMany(mappedBy = "helps")
+    @JsonIgnore
     private Set<Crop> helpedBy = new HashSet<>();
 
     @ManyToMany
+    @JsonIgnore
     private Set<Crop> avoids = new HashSet<>();
 
     @ManyToMany(mappedBy = "avoids")
+    @JsonIgnore
     private Set<Crop> avoidedBy = new HashSet<>();
+
+
+    //private Set<Integer> avoidedList;
 
     public Crop()
     {
