@@ -4,7 +4,10 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import javax.xml.bind.*;
+
+import model.repositories.CropRepository;
 import org.json.*;
+import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 
 public class ModelManager
 {
@@ -12,8 +15,9 @@ public class ModelManager
     //singleton
     private static ModelManager instance = null;
 
-    private  Garden currentGarden = new Garden(200, 200);
+    private  Garden currentGarden = new Garden(17 * 5, 35 * 5);
 
+    private ArrayList<Crop> crops;
 
     private ModelManager()
     {
@@ -33,5 +37,11 @@ public class ModelManager
             instance = new ModelManager();
         return instance;
     }
+
+
+    public ArrayList<Crop> getCrops() {
+        return crops;
+    }
+
 
 }

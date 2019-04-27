@@ -16,7 +16,7 @@ public class CropController {
         repository = cropRepository;
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+
     @RequestMapping("/crop")
     public List<Crop> getCrops()
     {
@@ -44,7 +44,7 @@ public class CropController {
                     c.setDiameter(crop.getDiameter());
                     c.setRowSpacing(crop.getRowSpacing());
                     c.setHeight(crop.getHeight());
-                    return repository.save(crop);
+                    return repository.save(c);
                 })
                 .orElseGet(() -> {
                     crop.setId(id);
@@ -62,6 +62,10 @@ public class CropController {
     @DeleteMapping("/crop/{id}")
     public void deleteCrop(@PathVariable Short id)
     {
+        CompanionController compController = new CompanionController(this.repository);
+        List<Companion> comps =  compController.getCompanions();
+        comps.removeIf(cmp ->  !cmp.getCropId1().equals(id) && !cmp.getCropId2().equals(id));
+        compController.DeleteCompanions(comps);
         repository.deleteById(id);
     }
 }

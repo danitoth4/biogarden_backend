@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.awt.*;
-import java.util.*;
 
 
 @Entity
@@ -23,6 +22,8 @@ public class ConcreteCrop {
     private Short preferenceValue;
 
     private Point startPoint;
+
+    private Point endPoint;
 
     @ManyToOne
     private final Crop cropType;
@@ -69,5 +70,14 @@ public class ConcreteCrop {
     public void setStartPoint(Point startPoint)
     {
         this.startPoint = startPoint;
+    }
+
+
+    public Point getEndPoint() {
+        return endPoint;
+    }
+
+    public void setEndPoint(Point endPoint) {
+        this.endPoint = endPoint;
     }
 }
