@@ -7,8 +7,9 @@ import java.awt.*;
 
 
 @Entity
-@Table( name = "ConcreteCrops")
-public class ConcreteCrop {
+@Table(name = "ConcreteCrops")
+public class ConcreteCrop
+{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,6 +31,7 @@ public class ConcreteCrop {
 
     /**
      * Initializes a new ConcreteCrop instance.
+     *
      * @param type The abstract type of the crop.
      */
     public ConcreteCrop(Crop type)
@@ -73,11 +75,18 @@ public class ConcreteCrop {
     }
 
 
-    public Point getEndPoint() {
+    public Point getEndPoint()
+    {
         return endPoint;
     }
 
-    public void setEndPoint(Point endPoint) {
+    public void setEndPoint(Point endPoint)
+    {
         this.endPoint = endPoint;
+    }
+
+    public Crop getCropType()
+    {
+        return cropType;
     }
 }

@@ -14,27 +14,40 @@ public class PlantingController {
     @GetMapping("/planting")
     public Collection<ConcreteCrop> getPlantedCrops()
     {
-        Garden garden = ModelManager.getInstance().getCurrentGarden();
-        return garden.getPlantedCrops().values();
+        return ModelManager.getInstance().getCurrentGarden().getPlantedCrops().values();
     }
 
     @PostMapping("/planting")
-    public ResponseEntity<List<ConcreteCrop>> postCrops(@RequestBody PlantingOperation newPlant)
+    public ResponseEntity<Collection<ConcreteCrop>> postCrops(@RequestBody PlantingOperation newPlant)
     {
         if(!newPlant.getMethod().equals(UpdateMethod.ADDED))
         {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        if(!ModelManager.getInstance().getCurrentGarden().plantCrop(newPlant))
+        {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(ModelManager.getInstance().getCurrentGarden().getPlantedCrops().values(), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/planting")
-    public ResponseEntity<List<ConcreteCrop>> deleteCrops(@RequestBody PlantingOperation deletedPlants)
+    public ResponseEntity<Collection<ConcreteCrop>> deleteCrops(@RequestBody PlantingOperation deletedPlants)
     {
         if(!deletedPlants.getMethod().equals(UpdateMethod.DELETED))
         {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        ModelManager.getInstance().getCurrentGarden().deleteCrops(deletedPlants);
+        return new ResponseEntity<>(ModelManager.getInstance().getCurrentGarden().getPlantedCrops().values(), HttpStatus.OK);
+    }
+
+    //do not forget to delete this
+    @GetMapping("/template")
+    public PlantingOperation temp()
+    {
+        PlantingOperation po = new PlantingOperation();
+        po.setMethod(UpdateMethod.ADDED);
+        return po;
     }
 }

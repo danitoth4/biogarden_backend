@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.awt.*;
 import java.util.HashMap;
+import java.util.Map;
 
 
 @Entity
@@ -100,7 +101,7 @@ public class Garden
     {
         for (ConcreteCrop cc : plantedCrops.values())
         {
-            if (isOverlapping(cc.getStartPoint(), cc.getEndPoint(), new Point(po.getX1(), po.getY1()), new Point(po.getX2(), po.getY2())))
+            if (cc != null && isOverlapping(cc.getStartPoint(), cc.getEndPoint(), new Point(po.getX1(), po.getY1()), new Point(po.getX2(), po.getY2())))
                 return false;
         }
 
@@ -110,7 +111,6 @@ public class Garden
             {
                 return false;
             }
-            ConcreteCrop plantedCrop = new ConcreteCrop(po.getCrop());
             int x = (po.getX2() - po.getX1()) * cellSize;
             int y = (po.getY2() - po.getY1()) * cellSize;
             int dm = Math.round(po.getCrop().getDiameter());
@@ -125,7 +125,8 @@ public class Garden
                 for (int l = 0; l < j; ++l)
                 {
                     //maybe this works, i have no idea
-                    plantedCrop.setStartPoint(new Point(po.getX1() + k * dm / cellSize, po.getY1() + l * dm / cellSize));
+                    ConcreteCrop plantedCrop = new ConcreteCrop(po.getCrop());
+                    plantedCrop.setStartPoint(new Point(po.getX1() + k * (dm / cellSize), po.getY1() + l * (dm / cellSize)));
                     plantedCrop.setEndPoint(new Point(plantedCrop.getStartPoint().x + dm / cellSize, plantedCrop.getStartPoint().y + dm / cellSize));
                     plantedCrops.put(new Point(plantedCrop.getStartPoint()), plantedCrop);
                 }
@@ -137,11 +138,22 @@ public class Garden
         }
     }
 
+    public void deleteCrops(PlantingOperation po)
+    {
+        for(Map.Entry<Point, ConcreteCrop> entry : plantedCrops.entrySet())
+        {
+            if (entry.getValue() != null && isOverlapping(entry.getValue().getStartPoint(), entry.getValue().getEndPoint(), new Point(po.getX1(), po.getY1()), new Point(po.getX2(), po.getY2())))
+            {
+                plantedCrops.replace(entry.getKey(), null);
+            }
+        }
+    }
+
     public boolean isOverlapping(Point topleft1, Point bottomright1, Point topleft2, Point bottomright2)
     {
-        if (topleft1.getY() < bottomright2.getY() || bottomright1.getY() > topleft2.getY())
+        if (topleft1.getY() >= bottomright2.getY() || bottomright1.getY() <= topleft2.getY())
             return false;
-        if (topleft1.getX() > bottomright2.getX() || bottomright1.getX() < topleft2.getX())
+        if (topleft1.getX() >= bottomright2.getX() || bottomright1.getX() <= topleft2.getX())
             return false;
         return true;
     }
