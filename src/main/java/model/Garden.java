@@ -31,21 +31,6 @@ public class Garden
 
     private HashMap<Point, ConcreteCrop> plantedCrops = new HashMap<>();
 
-    public Garden(int l, int w)
-    {
-        length = l;
-        width = w;
-
-        for (int i = 0; i < length / cellSize; ++i)
-        {
-            for (int j = 0; j < width / cellSize; ++j)
-            {
-                plantedCrops.put(new Point(i, j), null);
-
-            }
-        }
-    }
-
     public HashMap<Point, ConcreteCrop> getPlantedCrops()
     {
         return plantedCrops;
@@ -96,9 +81,27 @@ public class Garden
         this.width = width;
     }
 
+    public Garden(int l, int w)
+    {
+        length = l;
+        width = w;
+
+        for (int i = 0; i < length / cellSize; ++i)
+        {
+            for (int j = 0; j < width / cellSize; ++j)
+            {
+                plantedCrops.put(new Point(i, j), null);
+
+            }
+        }
+    }
 
     public boolean plantCrop(PlantingOperation po)
     {
+        if (!validatePosition(po))
+        {
+            return false;
+        }
         for (ConcreteCrop cc : plantedCrops.values())
         {
             if (cc != null && isOverlapping(cc.getStartPoint(), cc.getEndPoint(), new Point(po.getX1(), po.getY1()), new Point(po.getX2(), po.getY2())))
@@ -138,23 +141,37 @@ public class Garden
         }
     }
 
-    public void deleteCrops(PlantingOperation po)
+    public boolean deleteCrops(PlantingOperation po)
     {
-        for(Map.Entry<Point, ConcreteCrop> entry : plantedCrops.entrySet())
+        if (!validatePosition(po))
+        {
+            return false;
+        }
+        for (Map.Entry<Point, ConcreteCrop> entry : plantedCrops.entrySet())
         {
             if (entry.getValue() != null && isOverlapping(entry.getValue().getStartPoint(), entry.getValue().getEndPoint(), new Point(po.getX1(), po.getY1()), new Point(po.getX2(), po.getY2())))
             {
                 plantedCrops.replace(entry.getKey(), null);
             }
         }
+        return true;
     }
 
-    public boolean isOverlapping(Point topleft1, Point bottomright1, Point topleft2, Point bottomright2)
+    private boolean isOverlapping(Point topleft1, Point bottomright1, Point topleft2, Point bottomright2)
     {
         if (topleft1.getY() >= bottomright2.getY() || bottomright1.getY() <= topleft2.getY())
             return false;
         if (topleft1.getX() >= bottomright2.getX() || bottomright1.getX() <= topleft2.getX())
             return false;
+        return true;
+    }
+
+    private boolean validatePosition(PlantingOperation po)
+    {
+        if (po.getX1() > po.getX2() || po.getY1() > po.getY2() || !plantedCrops.containsKey(new Point(po.getX2() - 1, po.getY2() - 1)))
+        {
+            return false;
+        }
         return true;
     }
 }

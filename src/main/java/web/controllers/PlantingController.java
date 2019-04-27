@@ -24,11 +24,11 @@ public class PlantingController {
         {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if(!ModelManager.getInstance().getCurrentGarden().plantCrop(newPlant))
+        if(ModelManager.getInstance().getCurrentGarden().plantCrop(newPlant))
         {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ModelManager.getInstance().getCurrentGarden().getPlantedCrops().values(), HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(ModelManager.getInstance().getCurrentGarden().getPlantedCrops().values(), HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/planting")
@@ -38,8 +38,11 @@ public class PlantingController {
         {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        ModelManager.getInstance().getCurrentGarden().deleteCrops(deletedPlants);
-        return new ResponseEntity<>(ModelManager.getInstance().getCurrentGarden().getPlantedCrops().values(), HttpStatus.OK);
+        if(ModelManager.getInstance().getCurrentGarden().deleteCrops(deletedPlants))
+        {
+            return new ResponseEntity<>(ModelManager.getInstance().getCurrentGarden().getPlantedCrops().values(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     //do not forget to delete this
