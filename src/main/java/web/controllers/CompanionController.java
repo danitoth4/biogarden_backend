@@ -112,6 +112,21 @@ public class CompanionController
         return new ArrayList<Companion>(companions);
     }
 
+    @GetMapping("/companions/{id}")
+    public List<Companion> getCompanionsForCrop(@PathVariable("id") Short id)
+    {
+        initializeCompanions(repository);
+        List<Companion> toreturn = new ArrayList<>();
+        for(Companion c : companions)
+        {
+            if(c.getCropId1().equals(id) || c.getCropId2().equals(id))
+            {
+                toreturn.add(c);
+            }
+        }
+        return toreturn;
+    }
+
     @PostMapping("/companions")
     public void PostCompanions(@RequestBody List<Companion> newCompanions)
     {

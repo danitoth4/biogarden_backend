@@ -114,6 +114,7 @@ public class Garden
             {
                 return false;
             }
+            //checking if the plant fits there at least once
             int x = (po.getX2() - po.getX1()) * cellSize;
             int y = (po.getY2() - po.getY1()) * cellSize;
             int dm = Math.round(po.getCrop().getDiameter());
@@ -168,10 +169,19 @@ public class Garden
 
     private boolean validatePosition(PlantingOperation po)
     {
-        if (po.getX1() > po.getX2() || po.getY1() > po.getY2() || !plantedCrops.containsKey(new Point(po.getX2() - 1, po.getY2() - 1)))
+        if(po.getX1() > po.getX2() )
         {
-            return false;
+            int temp = po.getX1();
+            po.setX1(po.getX2());
+            po.setX2(temp);
         }
-        return true;
+        if(po.getY1() > po.getY2() )
+        {
+            int temp = po.getY1();
+            po.setY1(po.getY2());
+            po.setY2(temp);
+        }
+
+        return !(!plantedCrops.containsKey(new Point(po.getX1(), po.getY1())) || !plantedCrops.containsKey(new Point(po.getX2() -1 , po.getY2() - 1)));
     }
 }

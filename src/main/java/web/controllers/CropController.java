@@ -31,7 +31,7 @@ public class CropController {
     }
 
     @PutMapping("/crop/{id}")
-    public Crop putEmployee(@RequestBody Crop crop, @PathVariable Short id)
+    public Crop putCrop(@RequestBody Crop crop, @PathVariable Short id)
     {
 
         return repository.findById(id)

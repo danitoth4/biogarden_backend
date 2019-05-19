@@ -32,7 +32,7 @@ public class Application {
         {
             Crop c = new Crop();
             c.setName("Tomato");
-            c.setImageUrl("http://pngimg.com/uploads/tomato/tomato_PNG12567.png");
+            c.setImageUrl("https://ui-ex.com/images/tomato-vector-svg-3.png");
             c.setDiameter((float)10.0);
             for(Crop crop : repository.findAll())
             {
@@ -55,9 +55,7 @@ public class Application {
             @Override
             public void addCorsMappings(CorsRegistry registry)
             {
-                registry.addMapping("/crop").allowedOrigins("http://localhost:3000").allowedMethods("PUT", "POST", "GET", "DELETE");
-                registry.addMapping("/companions").allowedOrigins("http://localhost:3000").allowedMethods("PUT", "POST", "GET", "DELETE");
-                registry.addMapping("/planting").allowedOrigins("http://localhost:3000").allowedMethods("POST", "GET", "DELETE");
+                registry.addMapping("/**").allowedOrigins("http://localhost:3000").allowedMethods("PUT", "POST", "GET", "DELETE");
             }
         };
     }
