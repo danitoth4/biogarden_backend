@@ -1,5 +1,7 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.h2.table.Plan;
 
 import javax.persistence.Entity;
@@ -7,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +32,21 @@ public class Garden
 
     private Integer width;
 
+    @JsonProperty("plantedCrops")
+    private ArrayList<ConcreteCrop> plantedCropsList = new ArrayList<>();
+
+    @JsonIgnore
     private HashMap<Point, ConcreteCrop> plantedCrops = new HashMap<>();
+
+    public ArrayList<ConcreteCrop> getPlantedCropsList()
+    {
+        return plantedCropsList;
+    }
+
+    public void setPlantedCropsList(ArrayList<ConcreteCrop> plantedCropsList)
+    {
+        this.plantedCropsList = plantedCropsList;
+    }
 
     public HashMap<Point, ConcreteCrop> getPlantedCrops()
     {
@@ -132,6 +149,7 @@ public class Garden
                     ConcreteCrop plantedCrop = new ConcreteCrop(po.getCrop());
                     plantedCrop.setStartPoint(new Point(po.getX1() + k * (dm / cellSize), po.getY1() + l * (dm / cellSize)));
                     plantedCrop.setEndPoint(new Point(plantedCrop.getStartPoint().x + dm / cellSize, plantedCrop.getStartPoint().y + dm / cellSize));
+                    plantedCropsList.add(plantedCrop);
                     plantedCrops.put(new Point(plantedCrop.getStartPoint()), plantedCrop);
                 }
             }
@@ -152,6 +170,7 @@ public class Garden
         {
             if (entry.getValue() != null && isOverlapping(entry.getValue().getStartPoint(), entry.getValue().getEndPoint(), new Point(po.getX1(), po.getY1()), new Point(po.getX2(), po.getY2())))
             {
+                plantedCropsList.removeIf((cc) -> cc.getStartPoint().equals(new Point(po.getX1(), po.getY1())) && cc.getStartPoint().equals(new Point(po.getX2(), po.getY2())));
                 plantedCrops.replace(entry.getKey(), null);
             }
         }
