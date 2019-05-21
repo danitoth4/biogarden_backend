@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.Type;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import java.util.*;
@@ -22,6 +24,7 @@ public class Crop {
 
     private String binomialName;
 
+    @Length(max = 1000)
     private String Description;
 
     private SunType sunRequirement;

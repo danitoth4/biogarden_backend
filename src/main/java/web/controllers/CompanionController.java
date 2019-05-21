@@ -3,7 +3,6 @@ package web.controllers;
 import model.Companion;
 import model.repositories.CropRepository;
 
-import java.net.http.HttpRequest;
 import java.util.*;
 
 import model.Crop;
@@ -135,7 +134,7 @@ public class CompanionController
     }
 
     @PostMapping("/companions")
-    public void PostCompanions(@RequestBody List<Companion> newCompanions, HttpRequest request)
+    public void PostCompanions(@RequestBody List<Companion> newCompanions)
     {
         updateCompanions(newCompanions, UpdateMethod.ADDED, repository);
     }
