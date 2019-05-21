@@ -3,6 +3,7 @@ package web.controllers;
 import model.Companion;
 import model.repositories.CropRepository;
 
+import java.net.http.HttpRequest;
 import java.util.*;
 
 import model.Crop;
@@ -119,8 +120,14 @@ public class CompanionController
         List<Companion> toreturn = new ArrayList<>();
         for(Companion c : companions)
         {
-            if(c.getCropId1().equals(id) || c.getCropId2().equals(id))
+            if(c.getCropId1().equals(id))
             {
+                toreturn.add(c);
+            } else if(c.getCropId2().equals(id))
+            {
+                short temp = c.getCropId1();
+                c.setCropId1(c.getCropId2());
+                c.setCropId2(temp);
                 toreturn.add(c);
             }
         }
@@ -128,7 +135,7 @@ public class CompanionController
     }
 
     @PostMapping("/companions")
-    public void PostCompanions(@RequestBody List<Companion> newCompanions)
+    public void PostCompanions(@RequestBody List<Companion> newCompanions, HttpRequest request)
     {
         updateCompanions(newCompanions, UpdateMethod.ADDED, repository);
     }
