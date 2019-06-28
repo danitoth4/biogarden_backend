@@ -15,7 +15,7 @@ public class ModelManager
     //singleton
     private static ModelManager instance = null;
 
-    private  Garden currentGarden = new Garden(60 * 5, 30 * 5);
+    private  Garden currentGarden = new Garden(20 * 5, 10 * 5);
 
     private ArrayList<Crop> crops;
 

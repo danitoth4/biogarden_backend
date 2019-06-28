@@ -139,6 +139,7 @@ public class Garden
             {
                 return false;
             }
+            //some black magic calculations idk who wrote this garbage
             int i = x / dm;
             int j = y / dm;
             for (int k = 0; k < i; ++k)
@@ -150,7 +151,12 @@ public class Garden
                     plantedCrop.setStartPoint(new Point(po.getX1() + k * (dm / cellSize), po.getY1() + l * (dm / cellSize)));
                     plantedCrop.setEndPoint(new Point(plantedCrop.getStartPoint().x + dm / cellSize, plantedCrop.getStartPoint().y + dm / cellSize));
                     plantedCropsList.add(plantedCrop);
-                    plantedCrops.put(new Point(plantedCrop.getStartPoint()), plantedCrop);
+                    for(int x_index = (int)plantedCrop.getStartPoint().getX(); x_index < (int)plantedCrop.getEndPoint().getX(); ++x_index)
+                    {
+                        for(int y_index = (int)plantedCrop.getStartPoint().getY(); y_index < (int)plantedCrop.getEndPoint().getY(); ++y_index)
+                            plantedCrops.put(new Point(plantedCrop.getStartPoint()), plantedCrop);
+                    }
+
                 }
             }
             return true;
@@ -170,12 +176,13 @@ public class Garden
         {
             if (entry.getValue() != null && isOverlapping(entry.getValue().getStartPoint(), entry.getValue().getEndPoint(), new Point(po.getX1(), po.getY1()), new Point(po.getX2(), po.getY2())))
             {
-                plantedCropsList.removeIf((cc) -> cc.getStartPoint().equals(new Point(po.getX1(), po.getY1())) && cc.getStartPoint().equals(new Point(po.getX2(), po.getY2())));
+                plantedCropsList.remove( entry.getValue() );
                 plantedCrops.replace(entry.getKey(), null);
             }
         }
         return true;
     }
+
 
     private boolean isOverlapping(Point topleft1, Point bottomright1, Point topleft2, Point bottomright2)
     {
@@ -186,6 +193,12 @@ public class Garden
         return true;
     }
 
+
+    /**
+     * organizes the the coordinates in the right order and validates if they are on the grid
+     * @param po The planting operation
+     * @return true if the operation is valid
+     */
     private boolean validatePosition(PlantingOperation po)
     {
         if(po.getX1() > po.getX2() )
