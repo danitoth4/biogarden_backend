@@ -1,37 +1,48 @@
 package web.controllers;
 
 import model.*;
+import model.repositories.GardenRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import web.Util.UpdateMethod;
+import web.errorhandling.GardenNotFoundException;
+
 import java.util.*;
 
 @RestController
 public class PlantingController {
 
-    @GetMapping("/planting")
-    public Collection<ConcreteCrop> getPlantedCrops()
+    private final GardenRepository repository;
+
+    public PlantingController(GardenRepository gardenRepository)
     {
-        return ModelManager.getInstance().getCurrentGarden().getPlantedCropsList();
+        this.repository = gardenRepository;
     }
 
-    @PostMapping("/planting")
-    public ResponseEntity<Collection<ConcreteCrop>> postCrops(@RequestBody PlantingOperation newPlant)
+    @GetMapping("/planting/{id}")
+    public Collection<ConcreteCrop> getPlantedCrops(@PathVariable("id") int id)
     {
-        if(ModelManager.getInstance().getCurrentGarden().plantCrop(newPlant))
+        return repository.findById(id).orElseThrow(() -> new GardenNotFoundException(id)).getPlantedCropsList();
+    }
+
+    @PostMapping("/planting/{id}")
+    public ResponseEntity<Collection<ConcreteCrop>> postCrops(@RequestBody PlantingOperation newPlant, @PathVariable("id") int id)
+    {
+        Garden garden = repository.findById(id).orElseThrow(() -> new GardenNotFoundException(id));
+        if(garden.plantCrop(newPlant))
         {
-            return new ResponseEntity<>(ModelManager.getInstance().getCurrentGarden().getPlantedCrops().values(), HttpStatus.CREATED);
+            return new ResponseEntity<>(garden.getPlantedCrops().values(), HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping("/planting")
-    public ResponseEntity<Collection<ConcreteCrop>> deleteCrops(@RequestBody PlantingOperation deletedPlants)
+    @DeleteMapping("/planting/{id}")
+    public ResponseEntity<Collection<ConcreteCrop>> deleteCrops(@RequestBody PlantingOperation deletedPlants, @PathVariable("id") int id)
     {
-        if(ModelManager.getInstance().getCurrentGarden().deleteCrops(deletedPlants))
+        Garden garden = repository.findById(id).orElseThrow(() -> new GardenNotFoundException(id));
+        if(garden.deleteCrops(deletedPlants))
         {
-            return new ResponseEntity<>(ModelManager.getInstance().getCurrentGarden().getPlantedCrops().values(), HttpStatus.OK);
+            return new ResponseEntity<>(garden.getPlantedCrops().values(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

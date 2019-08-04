@@ -1,4 +1,4 @@
-package model;
+/*package model;
 
 import java.io.*;
 import java.net.*;
@@ -15,7 +15,7 @@ public class ModelManager
     //singleton
     private static ModelManager instance = null;
 
-    private  Garden currentGarden = new Garden(20 * 5, 10 * 5);
+    private  Garden currentGarden = new Garden(30 * 5, 15 * 5);
 
     private ArrayList<Crop> crops;
 
@@ -44,4 +44,4 @@ public class ModelManager
     }
 
 
-}
+}*/

@@ -1,29 +1,33 @@
 package web.controllers;
 
-
-import model.ModelManager;
-import org.apache.catalina.connector.Response;
+import model.repositories.GardenRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import model.*;
-
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
+import web.errorhandling.GardenNotFoundException;
 
 @RestController
 public class GardenController
 {
-    @GetMapping("/garden")
-    public Garden getGarden()
+    private final GardenRepository repository;
+
+    public GardenController(GardenRepository gardenRepository)
     {
-        return ModelManager.getInstance().getCurrentGarden();
+        this.repository = gardenRepository;
     }
+
+    @GetMapping("/garden/{id}")
+    public Garden getGarden(@PathVariable("id") int id)
+    {
+        return repository.findById(id).orElseThrow(() -> new GardenNotFoundException(id));
+    }
+
 
     @PostMapping("/garden")
     @ResponseStatus(HttpStatus.CREATED)
     public Garden postGarden(@RequestBody Garden garden)
     {
-        ModelManager.getInstance().setCurrentGarden(garden);
+        repository.save(garden);
         return garden;
     }
 
