@@ -39,7 +39,6 @@ public class CropController {
                     c.setName(crop.getName());
                     c.setBinomialName(crop.getBinomialName());
                     c.setDescription(crop.getDescription());
-                    c.setSunRequirement(crop.getSunRequirement());
                     c.setSowingMethod(crop.getSowingMethod());
                     c.setDiameter(crop.getDiameter());
                     c.setRowSpacing(crop.getRowSpacing());

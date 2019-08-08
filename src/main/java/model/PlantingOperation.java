@@ -14,10 +14,6 @@ public class PlantingOperation {
 
     private int y2;
 
-    private double currentZoom;
-
-    private UpdateMethod method;
-
     public Crop getCrop() {
         return crop;
     }
@@ -58,19 +54,4 @@ public class PlantingOperation {
         this.y2 = y2;
     }
 
-    public double getCurrentZoom() {
-        return currentZoom;
-    }
-
-    public void setCurrentZoom(double currentZoom) {
-        this.currentZoom = currentZoom;
-    }
-
-    public UpdateMethod getMethod() {
-        return method;
-    }
-
-    public void setMethod(UpdateMethod method) {
-        this.method = method;
-    }
 }

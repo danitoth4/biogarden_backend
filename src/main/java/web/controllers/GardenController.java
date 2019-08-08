@@ -19,14 +19,16 @@ public class GardenController
     @GetMapping("/garden/{id}")
     public Garden getGarden(@PathVariable("id") int id)
     {
-        return repository.findById(id).orElseThrow(() -> new GardenNotFoundException(id));
+        Garden garden =  repository.findById(id).orElseThrow(() -> new GardenNotFoundException(id));
+        return garden;
     }
 
 
     @PostMapping("/garden")
     @ResponseStatus(HttpStatus.CREATED)
-    public Garden postGarden(@RequestBody Garden garden)
+    public Garden postGarden(@RequestBody Garden g)
     {
+        Garden garden = new Garden(g.getLength(), g.getWidth());
         repository.save(garden);
         return garden;
     }

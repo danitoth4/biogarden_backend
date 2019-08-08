@@ -1,5 +1,6 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -10,11 +11,14 @@ import java.awt.*;
 @Table(name = "ConcreteCrops")
 public class ConcreteCrop
 {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonProperty("id")
     private Short id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JsonIgnore
+    private Garden garden;
 
     private Integer length;
 
@@ -27,7 +31,10 @@ public class ConcreteCrop
     private Point endPoint;
 
     @ManyToOne
-    private final Crop cropType;
+    private Crop cropType;
+
+
+    public ConcreteCrop(){}
 
     /**
      * Initializes a new ConcreteCrop instance.
@@ -37,6 +44,22 @@ public class ConcreteCrop
     public ConcreteCrop(Crop type)
     {
         cropType = type;
+    }
+
+    public Garden getGarden()
+    {
+        return garden;
+    }
+
+    public void setGarden(Garden garden)
+    {
+        this.garden = garden;
+    }
+
+
+    public Short getId()
+    {
+        return id;
     }
 
     public Integer getLength()
@@ -89,4 +112,14 @@ public class ConcreteCrop
     {
         return cropType;
     }
+
+    /*
+    @Override
+    public boolean equals(Object o)
+    {
+        if(o.getClass() != ConcreteCrop.class)
+            return false;
+        ConcreteCrop other = (ConcreteCrop)o;
+        return (this.id.equals(other.id) && this.startPoint.equals(other.startPoint) && this.endPoint.equals(other.endPoint) && this.garden.eq)
+    }*/
 }

@@ -33,7 +33,7 @@ public class Application {
             Crop c = new Crop();
             c.setName("Tomato");
             c.setImageUrl("https://ui-ex.com/images/tomato-vector-svg-3.png");
-            c.setDiameter((float)10.0);
+            c.setDiameter((float)2.0);
             for(Crop crop : repository.findAll())
             {
                 if(crop.getId() == 2)

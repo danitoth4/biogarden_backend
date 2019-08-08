@@ -27,8 +27,6 @@ public class Crop {
     @Length(max = 1000)
     private String Description;
 
-    private SunType sunRequirement;
-
     private String sowingMethod;
 
     private Float diameter;
@@ -56,14 +54,10 @@ public class Crop {
     @JsonIgnore
     private Set<Crop> avoidedBy = new HashSet<>();
 
-
-    //private Set<Integer> avoidedList;
-
     public Crop()
     {
 
     }
-
 
     public Short getId() {
         return id;
@@ -95,14 +89,6 @@ public class Crop {
 
     public void setDescription(String description) {
         Description = description;
-    }
-
-    public SunType getSunRequirement() {
-        return sunRequirement;
-    }
-
-    public void setSunRequirement(SunType sunRequirement) {
-        this.sunRequirement = sunRequirement;
     }
 
     public String getSowingMethod() {
