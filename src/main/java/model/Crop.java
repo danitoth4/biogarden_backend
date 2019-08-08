@@ -1,10 +1,7 @@
 package model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -12,13 +9,12 @@ import java.util.*;
 
 @Entity
 @Table( name = "Crops")
-//@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property= "id")
 public class Crop {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonProperty("id")
-    private Short id;
+    private Integer id;
 
     private String name;
 
@@ -59,11 +55,11 @@ public class Crop {
 
     }
 
-    public Short getId() {
+    public Integer getId() {
         return id;
     }
 
-    public  void setId(Short id) {
+    public  void setId(Integer id) {
         this.id = id;
     }
 

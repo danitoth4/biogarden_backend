@@ -25,13 +25,13 @@ public class CropController {
     }
 
     @RequestMapping("/crop/{id}")
-    public Crop getCrop(@PathVariable("id") Short id)
+    public Crop getCrop(@PathVariable("id") int id)
     {
         return repository.findById(id).orElseThrow(() -> new CropNotFoundException(id));
     }
 
     @PutMapping("/crop/{id}")
-    public Crop putCrop(@RequestBody Crop crop, @PathVariable Short id)
+    public Crop putCrop(@RequestBody Crop crop, @PathVariable int id)
     {
 
         return repository.findById(id)
@@ -59,7 +59,7 @@ public class CropController {
 
 
     @DeleteMapping("/crop/{id}")
-    public void deleteCrop(@PathVariable Short id)
+    public void deleteCrop(@PathVariable int id)
     {
         CompanionController compController = new CompanionController(this.repository);
         List<Companion> comps =  compController.getCompanions();

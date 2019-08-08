@@ -4,25 +4,25 @@ import java.util.Objects;
 
 public class Companion {
 
-    private Short cropId1;
+    private Integer cropId1;
 
-    private  Short cropId2;
+    private  Integer cropId2;
 
     private Boolean isPositive;
 
-    public Short getCropId1() {
+    public Integer getCropId1() {
         return cropId1;
     }
 
-    public void setCropId1(Short cropId1) {
+    public void setCropId1(Integer cropId1) {
         this.cropId1 = cropId1;
     }
 
-    public Short getCropId2() {
+    public Integer getCropId2() {
         return cropId2;
     }
 
-    public void setCropId2(Short cropId2) {
+    public void setCropId2(Integer cropId2) {
         this.cropId2 = cropId2;
     }
 

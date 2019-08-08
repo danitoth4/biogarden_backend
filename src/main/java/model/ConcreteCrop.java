@@ -14,7 +14,7 @@ public class ConcreteCrop
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonProperty("id")
-    private Short id;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
@@ -57,7 +57,7 @@ public class ConcreteCrop
     }
 
 
-    public Short getId()
+    public Integer getId()
     {
         return id;
     }

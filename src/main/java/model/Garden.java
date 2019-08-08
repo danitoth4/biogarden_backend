@@ -3,15 +3,12 @@ package model;
 import Misc.Cache;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
-
 import Misc.Grid;
 import model.repositories.ConcreteCropRepository;
 import web.errorhandling.GardenException;
@@ -25,7 +22,7 @@ public class Garden
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    //public static final int cellSize = 5;
+    private String name;
 
     private Integer length;
 
@@ -33,11 +30,12 @@ public class Garden
 
     @JsonProperty("plantedCrops")
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "garden", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<ConcreteCrop> plantedCropsList = new ArrayList<>();
 
     @JsonIgnore
     @Transient
-    private HashMap<Point, ConcreteCrop> plantedCrops;
+    private HashMap<Point, Integer> plantedCrops;
 
     /**
      *
@@ -69,6 +67,16 @@ public class Garden
         return id;
     }
 
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
     public List<ConcreteCrop> getPlantedCropsList()
     {
         return plantedCropsList;
@@ -79,12 +87,12 @@ public class Garden
         this.plantedCropsList = plantedCropsList;
     }
 
-    public HashMap<Point, ConcreteCrop> getPlantedCrops()
+    public HashMap<Point, Integer> getPlantedCrops()
     {
         return plantedCrops;
     }
 
-    public void setPlantedCrops(HashMap<Point, ConcreteCrop> plantedCrops)
+    public void setPlantedCrops(HashMap<Point, Integer> plantedCrops)
     {
         this.plantedCrops = plantedCrops;
     }
@@ -124,7 +132,7 @@ public class Garden
                         {
                             for(int j = cc.getStartPoint().y; j < cc.getEndPoint().y; ++j)
                             {
-                                plantedCrops.put(new Point(i, j), cc);
+                                plantedCrops.put(new Point(i, j), cc.getId());
                             }
                         }
                     }
@@ -156,7 +164,7 @@ public class Garden
         {
             return false;
         }
-        for (ConcreteCrop cc : plantedCrops.values())
+        for (ConcreteCrop cc : plantedCropsList)
         {
             if (cc != null && Grid.isOverlapping(cc.getStartPoint(), cc.getEndPoint(), new Point(po.getX1(), po.getY1()), new Point(po.getX2(), po.getY2())))
                 return false;
@@ -193,7 +201,7 @@ public class Garden
                     for(int x_index = (int)plantedCrop.getStartPoint().getX(); x_index < (int)plantedCrop.getEndPoint().getX(); ++x_index)
                     {
                         for(int y_index = (int)plantedCrop.getStartPoint().getY(); y_index < (int)plantedCrop.getEndPoint().getY(); ++y_index)
-                            plantedCrops.put(new Point(plantedCrop.getStartPoint()), plantedCrop);
+                            plantedCrops.put(new Point(plantedCrop.getStartPoint()), plantedCrop.getId());
                     }
                 }
             }
@@ -211,11 +219,13 @@ public class Garden
         {
             return false;
         }
-        for (Map.Entry<Point, ConcreteCrop> entry : plantedCrops.entrySet())
+        for (Map.Entry<Point, Integer> entry : plantedCrops.entrySet())
         {
-            if (entry.getValue() != null && Grid.isOverlapping(entry.getValue().getStartPoint(), entry.getValue().getEndPoint(), new Point(po.getX1(), po.getY1()), new Point(po.getX2(), po.getY2())))
+            ConcreteCrop cc = plantedCropsList.stream().filter(c -> c.getId().equals(entry.getValue())).findAny().orElse(null);
+            if (cc != null && Grid.isOverlapping(cc.getStartPoint(), cc.getEndPoint(), new Point(po.getX1(), po.getY1()), new Point(po.getX2(), po.getY2())))
             {
-                plantedCropsList.removeIf(cc -> cc.getId().equals(entry.getValue().getId()));
+                plantedCropsList.remove(cc);
+                //plantedCropsList.removeIf(c -> c.getId().equals(entry.getValue().getId()));
                 plantedCrops.replace(entry.getKey(), null);
 
             }

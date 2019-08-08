@@ -113,7 +113,7 @@ public class CompanionController
     }
 
     @GetMapping("/companions/{id}")
-    public List<Companion> getCompanionsForCrop(@PathVariable("id") Short id)
+    public List<Companion> getCompanionsForCrop(@PathVariable("id") int id)
     {
         initializeCompanions(repository);
         List<Companion> toreturn = new ArrayList<>();
@@ -124,7 +124,7 @@ public class CompanionController
                 toreturn.add(c);
             } else if(c.getCropId2().equals(id))
             {
-                short temp = c.getCropId1();
+                int temp = c.getCropId1();
                 c.setCropId1(c.getCropId2());
                 c.setCropId2(temp);
                 toreturn.add(c);

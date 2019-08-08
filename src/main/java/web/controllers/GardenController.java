@@ -1,10 +1,12 @@
 package web.controllers;
 
+import com.google.common.collect.Lists;
 import model.repositories.GardenRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import model.*;
 import web.errorhandling.GardenNotFoundException;
+import java.util.List;
 
 @RestController
 public class GardenController
@@ -16,13 +18,27 @@ public class GardenController
         this.repository = gardenRepository;
     }
 
+    @GetMapping("/garden")
+    public List<Garden> getGardens()
+    {
+        return Lists.newArrayList(repository.findAll());
+    }
+
     @GetMapping("/garden/{id}")
     public Garden getGarden(@PathVariable("id") int id)
     {
-        Garden garden =  repository.findById(id).orElseThrow(() -> new GardenNotFoundException(id));
-        return garden;
+        return repository.findById(id).orElseThrow(() -> new GardenNotFoundException(id));
     }
 
+    @PutMapping("/garden/{id}")
+    public Garden putGarden(@PathVariable("id") int id, @RequestBody Garden garden)
+    {
+        return repository.findById(id)
+                .map(g -> {
+                    g.setName(garden.getName());
+                    return repository.save(g);
+                }).orElseThrow(() -> new GardenNotFoundException(id));
+    }
 
     @PostMapping("/garden")
     @ResponseStatus(HttpStatus.CREATED)
@@ -33,10 +49,9 @@ public class GardenController
         return garden;
     }
 
-    /*
-    @PutMapping("/garden")
-    public Garden putGarden(@RequestBody Garden garden)
+    @DeleteMapping("/garden/{id}")
+    public void deleteGarden(@PathVariable("id") int id)
     {
-        return new Garden();
-    }*/
+        repository.deleteById(id);
+    }
 }
