@@ -137,9 +137,9 @@ public class Garden
                         }
                     }
 
-                    for (int i = 0; i < length; ++i)
+                    for (int i = 0; i < width; ++i)
                     {
-                        for (int j = 0; j < width; ++j)
+                        for (int j = 0; j < length; ++j)
                         {
                             Point p = new Point(i, j);
                             if(!plantedCrops.containsKey(p))

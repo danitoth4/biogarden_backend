@@ -45,6 +45,7 @@ public class GardenController
     public Garden postGarden(@RequestBody Garden g)
     {
         Garden garden = new Garden(g.getLength(), g.getWidth());
+        garden.setName(g.getName());
         repository.save(garden);
         return garden;
     }
