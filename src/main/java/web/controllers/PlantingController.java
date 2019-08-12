@@ -25,16 +25,18 @@ public class PlantingController {
     }
 
     @GetMapping("/planting/{id}")
-    public Collection<ConcreteCrop> getPlantedCrops(@PathVariable("id") int id)
+    public Collection<ConcreteCrop> getPlantedCrops(@PathVariable("id") int id, @RequestParam String zoomS)
     {
-        return gardenRepository.findById(id).orElseThrow(() -> new GardenNotFoundException(id)).getPlantedCropsList();
+        double zoom = Double.parseDouble(zoomS);
+        return gardenRepository.findById(id).orElseThrow(() -> new GardenNotFoundException(id)).getPlantedCropsList(zoom);
     }
 
     @PostMapping("/planting/{id}")
-    public ResponseEntity<Collection<ConcreteCrop>> postCrops(@RequestBody PlantingOperation newPlant, @PathVariable("id") int id)
+    public ResponseEntity<Collection<ConcreteCrop>> postCrops(@RequestBody PlantingOperation newPlant, @PathVariable("id") int id, @RequestParam String zoomS)
     {
         Garden garden = gardenRepository.findById(id).orElseThrow(() -> new GardenNotFoundException(id));
-        if(garden.plantCrop(newPlant, concreteCropRepository))
+        double zoom = Double.parseDouble(zoomS);
+        if(garden.plantCrop(newPlant, concreteCropRepository, zoom))
         {
             gardenRepository.save(garden);
             Cache.tryStoreGardeninCache(garden.getId(), garden.getPlantedCrops());
@@ -44,10 +46,11 @@ public class PlantingController {
     }
 
     @DeleteMapping("/planting/{id}")
-    public ResponseEntity<Collection<ConcreteCrop>> deleteCrops(@RequestBody PlantingOperation deletedPlants, @PathVariable("id") int id)
+    public ResponseEntity<Collection<ConcreteCrop>> deleteCrops(@RequestBody PlantingOperation deletedPlants, @PathVariable("id") int id, @RequestParam String zoomS)
     {
         Garden garden = gardenRepository.findById(id).orElseThrow(() -> new GardenNotFoundException(id));
-        if(garden.deleteCrops(deletedPlants))
+        double zoom = Double.parseDouble(zoomS);
+        if(garden.deleteCrops(deletedPlants, zoom))
         {
             gardenRepository.save(garden);
             Cache.tryStoreGardeninCache(garden.getId(), garden.getPlantedCrops());

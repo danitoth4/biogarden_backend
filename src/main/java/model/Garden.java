@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Stream;
+
 import Misc.Grid;
 import model.repositories.ConcreteCropRepository;
 import web.errorhandling.GardenException;
@@ -157,7 +157,44 @@ public class Garden
         }
     }
 
-    public boolean plantCrop(PlantingOperation po, ConcreteCropRepository repository)
+    public List<ConcreteCrop> getPlantedCropsList(double zoom)
+    {
+        //if(Double.compare(zoom, 1d) == 0)
+            return plantedCropsList;
+        /*initialize();
+        List<ConcreteCrop> zoomedList = new ArrayList<>();
+        //Stream<Map.Entry<Point, Integer>> stream = plantedCrops.entrySet().stream();
+        int i = 0, j = 0;
+        double dx0 = 0d, dx1 = zoom, dy0 = 0d, dy1 = zoom;
+        while (dx1 <= width)
+        {
+            while(dy1 <= length)
+            {
+                //really java???
+                /*final double fdx0 = dx0, fdx1 = dx1, fdy0 = dy0, fdy1 = dy1;
+                stream.filter(pair -> pair.getKey().x >= fdx0 && pair.getKey().x < fdx1 && pair.getKey().y >= fdy0 && pair.getKey() < fdy1)......maybe too slow
+                *//*
+                LinkedList<Integer> containedIds = new LinkedList<>();
+                for(int x = (int)Math.round(dx0); x < Math.round(dx1); ++x)
+                {
+                    for(int y = (int)Math.round(dy0); y < Math.round(dy1); ++y)
+                    {
+                        containedIds.add(plantedCrops.get(new Point(x,y)));
+                    }
+                }
+                Stream stream = plantedCropsList.stream().filter(c -> containedIds.contains(c.getId()));
+                if(stream.count() > 0)
+                {
+                    ConcreteCrop cc = new ConcreteCrop();
+                }
+                j++; dy0 = dy1; dy1 += zoom;
+            }
+            i++; dx0 = dx1; dx1 += zoom;
+        }
+*/
+    }
+
+    public boolean plantCrop(PlantingOperation po, ConcreteCropRepository repository, double zoom)
     {
         initialize();
         if (!validatePosition(po))
@@ -198,9 +235,9 @@ public class Garden
                     plantedCrop.setEndPoint(new Point(plantedCrop.getStartPoint().x + dm, plantedCrop.getStartPoint().y + dm));
                     repository.save(plantedCrop);
                     plantedCropsList.add(plantedCrop);
-                    for(int x_index = (int)plantedCrop.getStartPoint().getX(); x_index < (int)plantedCrop.getEndPoint().getX(); ++x_index)
+                    for(int x_index = plantedCrop.getStartPoint().x; x_index < plantedCrop.getEndPoint().x; ++x_index)
                     {
-                        for(int y_index = (int)plantedCrop.getStartPoint().getY(); y_index < (int)plantedCrop.getEndPoint().getY(); ++y_index)
+                        for(int y_index = plantedCrop.getStartPoint().y; y_index < plantedCrop.getEndPoint().y; ++y_index)
                             plantedCrops.put(new Point(plantedCrop.getStartPoint()), plantedCrop.getId());
                     }
                 }
@@ -212,7 +249,7 @@ public class Garden
         }
     }
 
-    public boolean deleteCrops(PlantingOperation po)
+    public boolean deleteCrops(PlantingOperation po, double zoom)
     {
         initialize();
         if (!validatePosition(po))
