@@ -25,18 +25,20 @@ public class PlantingController {
     }
 
     @GetMapping("/planting/{id}")
-    public Collection<ConcreteCrop> getPlantedCrops(@PathVariable("id") int id, @RequestParam String zoomS)
+    public Collection<ConcreteCrop> getPlantedCrops(@PathVariable("id") int id, @RequestParam String zoom, @RequestParam String startX, @RequestParam String startY, @RequestParam String endX, @RequestParam String endY)
     {
-        double zoom = Double.parseDouble(zoomS);
-        return gardenRepository.findById(id).orElseThrow(() -> new GardenNotFoundException(id)).getPlantedCropsList(zoom);
+        float zoomValue = Float.parseFloat(zoom);
+        int x1 = Integer.parseInt(startX), y1 = Integer.parseInt(startY), x2 = Integer.parseInt(endX), y2 = Integer.parseInt(endY);
+        return gardenRepository.findById(id).orElseThrow(() -> new GardenNotFoundException(id)).getPlantedCropsList(zoomValue, x1, y1, x2, y2);
     }
 
     @PostMapping("/planting/{id}")
-    public ResponseEntity<Collection<ConcreteCrop>> postCrops(@RequestBody PlantingOperation newPlant, @PathVariable("id") int id, @RequestParam String zoomS)
+    public ResponseEntity<Collection<ConcreteCrop>> postCrops(@RequestBody PlantingOperation newPlant, @PathVariable("id") int id, @RequestParam String zoom, @RequestParam String startX, @RequestParam String startY, @RequestParam String endX, @RequestParam String endY)
     {
         Garden garden = gardenRepository.findById(id).orElseThrow(() -> new GardenNotFoundException(id));
-        double zoom = Double.parseDouble(zoomS);
-        if(garden.plantCrop(newPlant, zoom))
+        float zoomValue = Float.parseFloat(zoom);
+        int x1 = Integer.parseInt(startX), y1 = Integer.parseInt(startY), x2 = Integer.parseInt(endX), y2 = Integer.parseInt(endY);
+        if(garden.plantCrop(newPlant, zoomValue))
         {
             gardenRepository.save(garden);
             Cache.tryStoreGardeninCache(garden.getId(), garden.getPlantedCrops());
@@ -46,11 +48,12 @@ public class PlantingController {
     }
 
     @DeleteMapping("/planting/{id}")
-    public ResponseEntity<Collection<ConcreteCrop>> deleteCrops(@RequestBody PlantingOperation deletedPlants, @PathVariable("id") int id, @RequestParam String zoomS)
+    public ResponseEntity<Collection<ConcreteCrop>> deleteCrops(@RequestBody PlantingOperation deletedPlants, @PathVariable("id") int id,@RequestParam String zoom, @RequestParam String startX, @RequestParam String startY, @RequestParam String endX, @RequestParam String endY)
     {
         Garden garden = gardenRepository.findById(id).orElseThrow(() -> new GardenNotFoundException(id));
-        double zoom = Double.parseDouble(zoomS);
-        if(garden.deleteCrops(deletedPlants, zoom))
+        float zoomValue = Float.parseFloat(zoom);
+        int x1 = Integer.parseInt(startX), y1 = Integer.parseInt(startY), x2 = Integer.parseInt(endX), y2 = Integer.parseInt(endY);
+        if(garden.deleteCrops(deletedPlants, zoomValue))
         {
             gardenRepository.save(garden);
             Cache.tryStoreGardeninCache(garden.getId(), garden.getPlantedCrops());

@@ -7,6 +7,8 @@ import javax.persistence.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import Misc.Grid;
@@ -157,41 +159,63 @@ public class Garden
         }
     }
 
-    public List<ConcreteCrop> getPlantedCropsList(double zoom)
+    public Collection<ConcreteCrop> getPlantedCropsList(float zoom, int x1, int y1, int x2, int y2)
     {
-        //if(Double.compare(zoom, 1d) == 0)
-            return plantedCropsList;
+        List<ConcreteCrop> zoomedList = plantedCropsList.stream().filter(cc -> cc.getStartX() >= x1 && cc.getStartY() >= y1 && cc.getEndX() < x2 && cc.getEndY() < y2).collect(Collectors.toList());
+        if(Double.compare(zoom, 1d) == 0)
+        {
+            zoomedList.forEach(cc -> {
+                cc.setId(null);
+            });
+        }
+        else
+        {
+            zoomedList.forEach(cc -> {
+                cc.setStartX(Math.round(cc.getStartX() / zoom));
+                cc.setStartY(Math.round(cc.getStartY() / zoom));
+                cc.setEndX(Math.round(cc.getEndX() / zoom));
+                cc.setEndY(Math.round(cc.getEndY() / zoom));
+                cc.setId(null);
+            });
+        }
+        return zoomedList.stream().distinct().collect(Collectors.toList());
         /*initialize();
         List<ConcreteCrop> zoomedList = new ArrayList<>();
         //Stream<Map.Entry<Point, Integer>> stream = plantedCrops.entrySet().stream();
         int i = 0, j = 0;
-        double dx0 = 0d, dx1 = zoom, dy0 = 0d, dy1 = zoom;
-        while (dx1 <= width)
+        double dx0 = x1, dx1 = x1 + zoom, dy0 = y1, dy1 = y1 + zoom;
+        while (dx1 <= x2)
         {
-            while(dy1 <= length)
+            while(dy1 <= y2)
             {
-                //really java???
-                /*final double fdx0 = dx0, fdx1 = dx1, fdy0 = dy0, fdy1 = dy1;
-                stream.filter(pair -> pair.getKey().x >= fdx0 && pair.getKey().x < fdx1 && pair.getKey().y >= fdy0 && pair.getKey() < fdy1)......maybe too slow
-                *//*
-                LinkedList<Integer> containedIds = new LinkedList<>();
+
+                LinkedList<String> containedIds = new LinkedList<>();
                 for(int x = (int)Math.round(dx0); x < Math.round(dx1); ++x)
                 {
                     for(int y = (int)Math.round(dy0); y < Math.round(dy1); ++y)
                     {
-                        containedIds.add(plantedCrops.get(new Point(x,y)));
+                        String id = plantedCrops.get(new Point(x,y));
+                        if(id != null)
+                        containedIds.add(id);
                     }
                 }
                 Stream stream = plantedCropsList.stream().filter(c -> containedIds.contains(c.getId()));
                 if(stream.count() > 0)
                 {
                     ConcreteCrop cc = new ConcreteCrop();
+                    cc.setStartX(i);
+                    cc.setStartY(j);
+
+                    if(stream.distinct().count() > 1)
+                    {
+
+                    }
                 }
                 j++; dy0 = dy1; dy1 += zoom;
             }
             i++; dx0 = dx1; dx1 += zoom;
-        }
-*/
+        }*/
+
     }
 
     public boolean plantCrop(PlantingOperation po, double zoom)
