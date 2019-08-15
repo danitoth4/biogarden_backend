@@ -20,17 +20,18 @@ public class ConcreteCrop
     @JsonIgnore
     private Garden garden;
 
-    private Integer length;
-
-    private Integer width;
-
     private Short preferenceValue;
 
     private Point startPoint;
 
     private Point endPoint;
 
+    @Column(name = "CROP_TYPE_ID", insertable = false, updatable = false)
+    private Integer cropTypeId;
+
     @ManyToOne
+    @JoinColumn(name = "CROP_TYPE_ID")
+    @JsonIgnore
     private Crop cropType;
 
 
@@ -62,24 +63,14 @@ public class ConcreteCrop
         return id;
     }
 
-    public Integer getLength()
+    public Integer getCropTypeId()
     {
-        return length;
+        return cropTypeId;
     }
 
-    public void setLength(Integer length)
+    public void setCropTypeId(Integer cropId)
     {
-        this.length = length;
-    }
-
-    public Integer getWidth()
-    {
-        return width;
-    }
-
-    public void setWidth(Integer width)
-    {
-        this.width = width;
+        this.cropTypeId = cropTypeId;
     }
 
     public Short getPreferenceValue()

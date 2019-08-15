@@ -233,7 +233,8 @@ public class Garden
                     plantedCrop.setGarden(this);
                     plantedCrop.setStartPoint(new Point(po.getX1() + k * dm, po.getY1() + l * dm));
                     plantedCrop.setEndPoint(new Point(plantedCrop.getStartPoint().x + dm, plantedCrop.getStartPoint().y + dm));
-                    repository.save(plantedCrop);
+                    //so i guess we need this in order to give it an id.. maybe should use some guids or whatever
+                    //repository.save(plantedCrop);
                     plantedCropsList.add(plantedCrop);
                     for(int x_index = plantedCrop.getStartPoint().x; x_index < plantedCrop.getEndPoint().x; ++x_index)
                     {
@@ -262,7 +263,6 @@ public class Garden
             if (cc != null && Grid.isOverlapping(cc.getStartPoint(), cc.getEndPoint(), new Point(po.getX1(), po.getY1()), new Point(po.getX2(), po.getY2())))
             {
                 plantedCropsList.remove(cc);
-                //plantedCropsList.removeIf(c -> c.getId().equals(entry.getValue().getId()));
                 plantedCrops.replace(entry.getKey(), null);
 
             }
