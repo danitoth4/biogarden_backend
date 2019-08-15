@@ -12,4 +12,13 @@ public class Grid
             return false;
         return true;
     }
+
+    public static boolean isOverlapping(int topleft1X, int topleft1Y, int bottomright1X, int bottomright1Y, int topleft2X, int topleft2Y, int bottomright2X, int bottomright2Y)
+    {
+        if (topleft1Y >= bottomright2Y || bottomright1Y <= topleft2Y)
+            return false;
+        if (topleft1X >= bottomright2X || bottomright1X <= topleft2X)
+            return false;
+        return true;
+    }
 }

@@ -7,16 +7,16 @@ import java.util.HashMap;
 
 public class Cache
 {
-    private static HashMap<Integer, HashMap<Point, Integer>> gardenCache;
+    private static HashMap<Integer, HashMap<Point, String>> gardenCache;
 
-    public static HashMap<Point, Integer> getCachedInstance(int id)
+    public static HashMap<Point, String> getCachedInstance(int id)
     {
         if(gardenCache == null)
             gardenCache = new HashMap<>();
         return gardenCache.get(id);
     }
 
-    public static boolean tryStoreGardeninCache(int id, HashMap<Point, Integer> map)
+    public static boolean tryStoreGardeninCache(int id, HashMap<Point, String> map)
     {
         if(hasFreeSpace() && id != 0)
         {

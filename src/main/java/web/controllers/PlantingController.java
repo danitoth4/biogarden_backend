@@ -36,7 +36,7 @@ public class PlantingController {
     {
         Garden garden = gardenRepository.findById(id).orElseThrow(() -> new GardenNotFoundException(id));
         double zoom = Double.parseDouble(zoomS);
-        if(garden.plantCrop(newPlant, concreteCropRepository, zoom))
+        if(garden.plantCrop(newPlant, zoom))
         {
             gardenRepository.save(garden);
             Cache.tryStoreGardeninCache(garden.getId(), garden.getPlantedCrops());

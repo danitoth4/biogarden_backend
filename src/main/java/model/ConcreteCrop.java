@@ -12,9 +12,8 @@ import java.awt.*;
 public class ConcreteCrop
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonProperty("id")
-    private Integer id;
+    private String id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
@@ -22,9 +21,13 @@ public class ConcreteCrop
 
     private Short preferenceValue;
 
-    private Point startPoint;
+    private int startX;
 
-    private Point endPoint;
+    private int startY;
+
+    private int endX;
+
+    private int endY;
 
     @Column(name = "CROP_TYPE_ID", insertable = false, updatable = false)
     private Integer cropTypeId;
@@ -35,7 +38,10 @@ public class ConcreteCrop
     private Crop cropType;
 
 
-    public ConcreteCrop(){}
+    public ConcreteCrop()
+    {
+        id = java.util.UUID.randomUUID().toString();
+    }
 
     /**
      * Initializes a new ConcreteCrop instance.
@@ -44,6 +50,7 @@ public class ConcreteCrop
      */
     public ConcreteCrop(Crop type)
     {
+        id = java.util.UUID.randomUUID().toString();
         cropType = type;
     }
 
@@ -58,9 +65,14 @@ public class ConcreteCrop
     }
 
 
-    public Integer getId()
+    public String getId()
     {
         return id;
+    }
+
+    public void  setId(String id)
+    {
+        this.id = id;
     }
 
     public Integer getCropTypeId()
@@ -68,9 +80,49 @@ public class ConcreteCrop
         return cropTypeId;
     }
 
-    public void setCropTypeId(Integer cropId)
+    public void setCropTypeId(Integer cropTypeId)
     {
         this.cropTypeId = cropTypeId;
+    }
+
+    public int getStartX()
+    {
+        return startX;
+    }
+
+    public void setStartX(int startX)
+    {
+        this.startX = startX;
+    }
+
+    public int getStartY()
+    {
+        return startY;
+    }
+
+    public void setStartY(int startY)
+    {
+        this.startY = startY;
+    }
+
+    public int getEndX()
+    {
+        return endX;
+    }
+
+    public void setEndX(int endX)
+    {
+        this.endX = endX;
+    }
+
+    public int getEndY()
+    {
+        return endY;
+    }
+
+    public void setEndY(int endY)
+    {
+        this.endY = endY;
     }
 
     public Short getPreferenceValue()
@@ -78,39 +130,9 @@ public class ConcreteCrop
         return preferenceValue;
     }
 
-    public Point getStartPoint()
-    {
-        return startPoint;
-    }
-
-    public void setStartPoint(Point startPoint)
-    {
-        this.startPoint = startPoint;
-    }
-
-
-    public Point getEndPoint()
-    {
-        return endPoint;
-    }
-
-    public void setEndPoint(Point endPoint)
-    {
-        this.endPoint = endPoint;
-    }
-
     public Crop getCropType()
     {
         return cropType;
     }
 
-    /*
-    @Override
-    public boolean equals(Object o)
-    {
-        if(o.getClass() != ConcreteCrop.class)
-            return false;
-        ConcreteCrop other = (ConcreteCrop)o;
-        return (this.id.equals(other.id) && this.startPoint.equals(other.startPoint) && this.endPoint.equals(other.endPoint) && this.garden.eq)
-    }*/
 }

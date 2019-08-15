@@ -35,7 +35,7 @@ public class Garden
 
     @JsonIgnore
     @Transient
-    private HashMap<Point, Integer> plantedCrops;
+    private HashMap<Point, String> plantedCrops;
 
     /**
      *
@@ -87,12 +87,12 @@ public class Garden
         this.plantedCropsList = plantedCropsList;
     }
 
-    public HashMap<Point, Integer> getPlantedCrops()
+    public HashMap<Point, String> getPlantedCrops()
     {
         return plantedCrops;
     }
 
-    public void setPlantedCrops(HashMap<Point, Integer> plantedCrops)
+    public void setPlantedCrops(HashMap<Point, String> plantedCrops)
     {
         this.plantedCrops = plantedCrops;
     }
@@ -128,9 +128,9 @@ public class Garden
 
                     for(ConcreteCrop cc : plantedCropsList)
                     {
-                        for(int i = cc.getStartPoint().x; i < cc.getEndPoint().x; ++i )
+                        for(int i = cc.getStartX(); i < cc.getEndX(); ++i )
                         {
-                            for(int j = cc.getStartPoint().y; j < cc.getEndPoint().y; ++j)
+                            for(int j = cc.getStartY(); j < cc.getEndY(); ++j)
                             {
                                 plantedCrops.put(new Point(i, j), cc.getId());
                             }
@@ -194,7 +194,7 @@ public class Garden
 */
     }
 
-    public boolean plantCrop(PlantingOperation po, ConcreteCropRepository repository, double zoom)
+    public boolean plantCrop(PlantingOperation po, double zoom)
     {
         initialize();
         if (!validatePosition(po))
@@ -203,7 +203,7 @@ public class Garden
         }
         for (ConcreteCrop cc : plantedCropsList)
         {
-            if (cc != null && Grid.isOverlapping(cc.getStartPoint(), cc.getEndPoint(), new Point(po.getX1(), po.getY1()), new Point(po.getX2(), po.getY2())))
+            if (cc != null && Grid.isOverlapping(cc.getStartX(), cc.getStartY(), cc.getEndX(), cc.getEndY(), po.getX1(), po.getY1(), po.getX2(), po.getY2()))
                 return false;
         }
 
@@ -231,15 +231,16 @@ public class Garden
                     //maybe this works, i have no idea
                     ConcreteCrop plantedCrop = new ConcreteCrop(po.getCrop());
                     plantedCrop.setGarden(this);
-                    plantedCrop.setStartPoint(new Point(po.getX1() + k * dm, po.getY1() + l * dm));
-                    plantedCrop.setEndPoint(new Point(plantedCrop.getStartPoint().x + dm, plantedCrop.getStartPoint().y + dm));
-                    //so i guess we need this in order to give it an id.. maybe should use some guids or whatever
-                    //repository.save(plantedCrop);
+                    plantedCrop.setStartX(po.getX1() + k * dm);
+                    plantedCrop.setStartY(po.getY1() + l * dm);
+                    plantedCrop.setEndX(plantedCrop.getStartX() + dm);
+                    plantedCrop.setEndY(plantedCrop.getStartY() + dm);
+                    plantedCrop.setCropTypeId(plantedCrop.getCropType().getId());
                     plantedCropsList.add(plantedCrop);
-                    for(int x_index = plantedCrop.getStartPoint().x; x_index < plantedCrop.getEndPoint().x; ++x_index)
+                    for(int x_index = plantedCrop.getStartX(); x_index < plantedCrop.getEndX(); ++x_index)
                     {
-                        for(int y_index = plantedCrop.getStartPoint().y; y_index < plantedCrop.getEndPoint().y; ++y_index)
-                            plantedCrops.put(new Point(plantedCrop.getStartPoint()), plantedCrop.getId());
+                        for(int y_index = plantedCrop.getStartY(); y_index < plantedCrop.getEndY(); ++y_index)
+                            plantedCrops.put(new Point(plantedCrop.getStartX(), plantedCrop.getStartY()), plantedCrop.getId());
                     }
                 }
             }
@@ -257,10 +258,10 @@ public class Garden
         {
             return false;
         }
-        for (Map.Entry<Point, Integer> entry : plantedCrops.entrySet())
+        for (Map.Entry<Point, String> entry : plantedCrops.entrySet())
         {
             ConcreteCrop cc = plantedCropsList.stream().filter(c -> c.getId().equals(entry.getValue())).findAny().orElse(null);
-            if (cc != null && Grid.isOverlapping(cc.getStartPoint(), cc.getEndPoint(), new Point(po.getX1(), po.getY1()), new Point(po.getX2(), po.getY2())))
+            if (cc != null && Grid.isOverlapping(cc.getStartX(), cc.getStartY(), cc.getEndX(), cc.getEndY(), po.getX1(), po.getY1(), po.getX2(), po.getY2()))
             {
                 plantedCropsList.remove(cc);
                 plantedCrops.replace(entry.getKey(), null);
