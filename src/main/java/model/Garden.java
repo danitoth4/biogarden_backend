@@ -162,22 +162,13 @@ public class Garden
     public Collection<ConcreteCrop> getPlantedCropsList(float zoom, int x1, int y1, int x2, int y2)
     {
         List<ConcreteCrop> zoomedList = plantedCropsList.stream().filter(cc -> cc.getStartX() >= x1 && cc.getStartY() >= y1 && cc.getEndX() < x2 && cc.getEndY() < y2).collect(Collectors.toList());
-        if(Double.compare(zoom, 1d) == 0)
-        {
-            zoomedList.forEach(cc -> {
-                cc.setId(null);
-            });
-        }
-        else
-        {
-            zoomedList.forEach(cc -> {
-                cc.setStartX(Math.round(cc.getStartX() / zoom));
-                cc.setStartY(Math.round(cc.getStartY() / zoom));
-                cc.setEndX(Math.round(cc.getEndX() / zoom));
-                cc.setEndY(Math.round(cc.getEndY() / zoom));
-                cc.setId(null);
-            });
-        }
+        zoomedList.forEach(cc -> {
+            cc.setStartX(Math.round((cc.getStartX() - x1) / zoom));
+            cc.setStartY(Math.round((cc.getStartY() - y1) / zoom));
+            cc.setEndX(Math.round((cc.getEndX() - x1) / zoom));
+            cc.setEndY(Math.round((cc.getEndY() - y1 ) / zoom));
+            cc.setId(null);
+        });
         return zoomedList.stream().distinct().collect(Collectors.toList());
         /*initialize();
         List<ConcreteCrop> zoomedList = new ArrayList<>();
