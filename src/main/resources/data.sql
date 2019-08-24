@@ -8,7 +8,7 @@ INSERT INTO CROPS(ID, NAME, IMAGE_URL, DIAMETER)
 VALUES(4, 'Watermelon', 'https://sitejerk.com/images/watermelon-png-clipart-5.png', 5);
 
 INSERT INTO CROPS(ID, NAME, IMAGE_URL, DIAMETER, BINOMIAL_NAME, DESCRIPTION)
-VALUES(5, 'Cabbage', '', 4, 'Brassica oleracea', 'Cabbage is a member of the Brassica family and related to kale, broccoli, brussels sprouts, and cauliflower. It''s dense, layered heads grow on stalks and are surrounded by looser outer leaves. It''s leaves can be green, white, or purple in color, and smooth or crinkly in texture. Depending on the variety, the head can be round, oblong, or flat. Cabbage prefers cooler temperatures and is best planted in the spring or fall.');
+VALUES(5, 'Cabbage', 'https://www.clipartmax.com/png/middle/165-1654992_organic-green-cabbage-png-brussel-sprouts-transparent-background.png', 4, 'Brassica oleracea', 'Cabbage is a member of the Brassica family and related to kale, broccoli, brussels sprouts, and cauliflower. It''s dense, layered heads grow on stalks and are surrounded by looser outer leaves. It''s leaves can be green, white, or purple in color, and smooth or crinkly in texture. Depending on the variety, the head can be round, oblong, or flat. Cabbage prefers cooler temperatures and is best planted in the spring or fall.');
 
 INSERT INTO CROPS(ID, NAME, IMAGE_URL, DIAMETER, BINOMIAL_NAME, DESCRIPTION)
 VALUES(6, 'Mix', 'https://www.lhf.org/learning-fields/wp-content/themes/wordpress-elixir/build/img/crop-icon.png', 1, '', '');

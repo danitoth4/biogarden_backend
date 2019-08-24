@@ -159,17 +159,32 @@ public class Garden
         }
     }
 
+    public Collection<ConcreteCrop> selectDistinct(Collection<ConcreteCrop> crops)
+    {
+        crops.stream().distinct().
+        for(ConcreteCrop cc : crops)
+        {
+
+        }
+        return crops;
+    }
+
     public Collection<ConcreteCrop> getPlantedCropsList(float zoom, int x1, int y1, int x2, int y2)
     {
-        List<ConcreteCrop> zoomedList = plantedCropsList.stream().filter(cc -> cc.getStartX() >= x1 && cc.getStartY() >= y1 && cc.getEndX() < x2 && cc.getEndY() < y2).collect(Collectors.toList());
+        List<ConcreteCrop> zoomedList = plantedCropsList.stream().filter(cc -> (cc.getStartX() >= x1 && cc.getStartY() >= y1 && cc.getStartX() < x2 && cc.getStartY() < y2) ||
+                cc.getEndX() > x1 && cc.getEndY() > y1 && cc.getEndX() <= x2 && cc.getEndY() <= y2).collect(Collectors.toList());
         zoomedList.forEach(cc -> {
             cc.setStartX(Math.round((cc.getStartX() - x1) / zoom));
             cc.setStartY(Math.round((cc.getStartY() - y1) / zoom));
             cc.setEndX(Math.round((cc.getEndX() - x1) / zoom));
             cc.setEndY(Math.round((cc.getEndY() - y1 ) / zoom));
+            if(cc.getStartX() == cc.getEndX())
+                cc.setEndX(cc.getStartX() + 1);
+            if(cc.getStartY() == cc.getEndY())
+                cc.setEndY(cc.getEndY() + 1);
             cc.setId(null);
         });
-        return zoomedList.stream().distinct().collect(Collectors.toList());
+        return selectDistinct(zoomedList);
         /*initialize();
         List<ConcreteCrop> zoomedList = new ArrayList<>();
         //Stream<Map.Entry<Point, Integer>> stream = plantedCrops.entrySet().stream();
