@@ -21,10 +21,6 @@ public class GardenContent
 
     String name;
 
-    int length;
-
-    int width;
-
     @JsonProperty("plantedCrops")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "gardenContent", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
@@ -44,27 +40,14 @@ public class GardenContent
     @OneToOne(fetch = FetchType.LAZY)
     public GardenContent after;
 
-    public GardenContent(int l, int w, String name)
+    public GardenContent(Garden garden, String name)
     {
-        length = l;
-        width = w;
+        this.garden = garden;
         this.name = name;
     }
 
     void initialize()
     {
-        if(length == 0)
-            if(garden != null)
-                length = garden.getLength();
-            else
-                throw new GardenException("Width can't be 0");
-
-        if(width == 0)
-            if(garden != null)
-                width = garden.getWidth();
-            else
-                throw new GardenException("Width can't be 0");
-
         //first we check if the map is null
         if(plantedCrops == null)
         {
@@ -88,9 +71,9 @@ public class GardenContent
                         }
                     }
                 }
-                for (int i = 0; i < width; ++i)
+                for (int i = 0; i < garden.getWidth(); ++i)
                 {
-                    for (int j = 0; j < length; ++j)
+                    for (int j = 0; j < garden.getLength(); ++j)
                     {
                         Point p = new Point(i, j);
                         if(!plantedCrops.containsKey(p))

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -29,6 +31,7 @@ public class ConcreteCrop
 
     private int endY;
 
+    //we need the fk so we only need to send this to the client
     @Column(name = "CROP_TYPE_ID", insertable = false, updatable = false)
     private Integer cropTypeId;
 
@@ -37,6 +40,11 @@ public class ConcreteCrop
     @JsonIgnore
     private Crop cropType;
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "impacterCompanionId")
+    public List<CompanionRecommendation> companionRecommendations = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "impactedCrop")
+    public List<RotationRecommendation> rotationRecommendations = new ArrayList<>();
 
     public ConcreteCrop()
     {

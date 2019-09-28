@@ -18,7 +18,7 @@ public class Garden
 
     private Integer width;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "garden")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "garden", cascade = CascadeType.ALL)
     private List<GardenContent> gardenContents = new ArrayList<>();
 
     /**
@@ -36,7 +36,7 @@ public class Garden
     {
         length = l;
         width = w;
-        GardenContent def = new GardenContent(l ,w, "Default");
+        GardenContent def = new GardenContent(this, "Default");
         this.gardenContents.add(def);
     }
 
