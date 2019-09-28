@@ -7,9 +7,14 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import java.util.*;
 
+import static model.CropType.*;
+
 @Entity
 @Table( name = "Crops")
 public class Crop {
+
+
+    public static CropType[] cropCylcle = {LEAF, FRUIT, ROOT, LEGUMES};
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,6 +37,8 @@ public class Crop {
     private Float height;
 
     private String imageUrl;
+
+    private CropType type;
 
 
     @ManyToMany
@@ -158,5 +165,15 @@ public class Crop {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public CropType getType()
+    {
+        return type;
+    }
+
+    public void setType(CropType type)
+    {
+        this.type = type;
     }
 }

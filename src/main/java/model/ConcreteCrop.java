@@ -17,7 +17,7 @@ public class ConcreteCrop
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
-    private Garden garden;
+    private GardenContent gardenContent;
 
     private Short preferenceValue;
 
@@ -54,14 +54,14 @@ public class ConcreteCrop
         cropType = type;
     }
 
-    public Garden getGarden()
+    public GardenContent getGarden()
     {
-        return garden;
+        return gardenContent;
     }
 
-    public void setGarden(Garden garden)
+    public void setGarden(GardenContent gardenContent)
     {
-        this.garden = garden;
+        this.gardenContent = gardenContent;
     }
 
 
