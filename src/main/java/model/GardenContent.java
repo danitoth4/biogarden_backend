@@ -34,7 +34,15 @@ public class GardenContent
     @Transient
     public HashMap<Point, String> plantedCrops;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     Garden garden;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "after")
+    public GardenContent before;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    public GardenContent after;
 
     public GardenContent(int l, int w, String name)
     {

@@ -1,17 +1,7 @@
 package model;
 
-import Misc.Cache;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.*;
-import java.awt.*;
 import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import Misc.Grid;
-import web.errorhandling.GardenException;
 
 
 @Entity
@@ -28,7 +18,8 @@ public class Garden
 
     private Integer width;
 
-    private ArrayList<GardenContent> gardenContents = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "garden")
+    private List<GardenContent> gardenContents = new ArrayList<>();
 
     /**
      *
@@ -74,12 +65,12 @@ public class Garden
         return width;
     }
 
-    public ArrayList<GardenContent> getGardenContents()
+    public List<GardenContent> getGardenContents()
     {
         return gardenContents;
     }
 
-    public void setGardenContent(ArrayList<GardenContent> gardenContents)
+    public void setGardenContent(List<GardenContent> gardenContents)
     {
         this.gardenContents = gardenContents;
     }
