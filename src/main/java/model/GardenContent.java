@@ -63,13 +63,7 @@ public class GardenContent
 
                 for(ConcreteCrop cc : plantedCropsList)
                 {
-                    for(int i = cc.getStartX(); i < cc.getEndX(); ++i )
-                    {
-                        for(int j = cc.getStartY(); j < cc.getEndY(); ++j)
-                        {
-                            plantedCrops.put(new Point(i, j), cc.getId());
-                        }
-                    }
+                    addCropToMap(cc);
                 }
                 for (int i = 0; i < garden.getWidth(); ++i)
                 {
@@ -84,6 +78,20 @@ public class GardenContent
                 }
             }
         }
+    }
+
+    private void addCropToMap(ConcreteCrop cc)
+    {
+        if(plantedCrops == null)
+            return;
+        for(int i = cc.getStartX(); i < cc.getEndX(); ++i )
+        {
+            for(int j = cc.getStartY(); j < cc.getEndY(); ++j)
+            {
+                plantedCrops.put(new Point(i, j), cc.getId());
+            }
+        }
+
     }
 
     public Collection<ConcreteCrop> getPlantedCropsList(float zoom, int x1, int y1, int x2, int y2)
@@ -125,12 +133,12 @@ public class GardenContent
             //checking if the plant fits there at least once
             int x = po.getX2() - po.getX1();
             int y = po.getY2() - po.getY1();
-            int dm = Math.round(po.getCrop().getDiameter());
+            int dm = po.getCrop().getDiameter();
             if (dm > x || dm > y)
             {
                 return false;
             }
-            //some black magic calculations idk who wrote this garbage
+            //how many times it fits there in x direction and y direction
             int i = x / dm;
             int j = y / dm;
             for (int k = 0; k < i; ++k)
@@ -145,18 +153,61 @@ public class GardenContent
                     plantedCrop.setEndX(plantedCrop.getStartX() + dm);
                     plantedCrop.setEndY(plantedCrop.getStartY() + dm);
                     plantedCrop.setCropTypeId(plantedCrop.getCropType().getId());
+                    plantedCropsList.stream().parallel().forEach(cc -> {
+                        if(Grid.isOverlapping(cc.getStartX(), cc.getStartY(), cc.getEndX(), cc.getEndY(), plantedCrop.getStartX() - dm, plantedCrop.getStartY() - dm, plantedCrop.getEndX() + dm, plantedCrop.getEndY() + dm))
+                        {
+                            cc.addCompanionRecommendation(plantedCrop);
+                            plantedCrop.addCompanionRecommendation(cc);
+                        }
+                    });
                     plantedCropsList.add(plantedCrop);
-                    for (int x_index = plantedCrop.getStartX(); x_index < plantedCrop.getEndX(); ++x_index)
-                    {
-                        for (int y_index = plantedCrop.getStartY(); y_index < plantedCrop.getEndY(); ++y_index)
-                            plantedCrops.put(new Point(plantedCrop.getStartX(), plantedCrop.getStartY()), plantedCrop.getId());
-                    }
+                    addCropToMap(plantedCrop);
+                    addRotationRecommendations(plantedCrop);
                 }
             }
             return true;
         } catch (Exception e)
         {
             return false;
+        }
+    }
+
+    private void addRotationRecommendations(ConcreteCrop cc)
+    {
+        if(this.before != null)
+        {
+            before.initialize();
+            addRotationRecommendation(before, this, cc.getStartX(), cc.getStartY(), cc.getEndX(), cc.getEndY());
+        }
+        if(this.after != null)
+        {
+            after.initialize();
+            addRotationRecommendation(this, after, cc.getStartX(), cc.getStartY(), cc.getEndX(), cc.getEndY());
+
+        }
+    }
+
+    private static void addRotationRecommendation(GardenContent last, GardenContent current, int startX, int startY, int endX, int endY)
+    {
+        //List<ConcreteCrop> onBefore = new LinkedList<>();
+        //List<ConcreteCrop> onCurrently = new LinkedList<>();
+        for(int i = startX; i <= endX; ++i)
+        {
+            for(int j = startY; j <= endY; ++i)
+            {
+                Point p = new Point(i, j);
+                String onBeforeId = last.plantedCrops.get(p);
+                String onCurrentlyId = current.plantedCrops.get(p);
+                if(onBeforeId != null && onCurrentlyId != null)
+                {
+                    ConcreteCrop onCurrently = current.plantedCropsList.stream().filter(cc -> cc.getId().equals(onCurrentlyId)).findFirst().orElse(null);
+                    ConcreteCrop onBefore = last.plantedCropsList.stream().filter(cc -> cc.getId().equals(onBeforeId)).findFirst().orElse(null);
+                    if(onCurrently != null)
+                    {
+                        onCurrently.addRotationRecommendation(onBefore, last.id);
+                    }
+                }
+            }
         }
     }
 

@@ -14,7 +14,7 @@ import static model.CropType.*;
 public class Crop {
 
 
-    public static CropType[] cropCylcle = {LEAF, FRUIT, ROOT, LEGUMES};
+    public static ArrayList<CropType> cropCylcle = new ArrayList<>(Arrays.asList(LEAF, FRUIT, ROOT, LEGUMES));
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,7 +30,7 @@ public class Crop {
 
     private String sowingMethod;
 
-    private Float diameter;
+    private int diameter;
 
     private Float rowSpacing;
 
@@ -102,11 +102,11 @@ public class Crop {
         this.sowingMethod = sowingMethod;
     }
 
-    public Float getDiameter() {
+    public int getDiameter() {
         return diameter;
     }
 
-    public void setDiameter(Float diameter) {
+    public void setDiameter(int diameter) {
         this.diameter = diameter;
     }
 

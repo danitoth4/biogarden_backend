@@ -40,10 +40,10 @@ public class ConcreteCrop
     @JsonIgnore
     private Crop cropType;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "impacterCompanionId")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "impactedCrop", cascade = CascadeType.ALL)
     public List<CompanionRecommendation> companionRecommendations = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "impactedCrop")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "impactedCrop", cascade = CascadeType.ALL)
     public List<RotationRecommendation> rotationRecommendations = new ArrayList<>();
 
     public ConcreteCrop()
@@ -141,6 +141,71 @@ public class ConcreteCrop
     public Crop getCropType()
     {
         return cropType;
+    }
+
+    void addCompanionRecommendation(ConcreteCrop crop)
+    {
+        CompanionRecommendation rec = null;
+        if(cropType.getAvoids().stream().anyMatch(a -> a.getId().equals(crop.getCropType().getId())))
+        {
+            rec = new CompanionRecommendation();
+            rec.value = -6;
+            rec.impacterId = crop.id;
+            rec.otherCropId = crop.getCropTypeId();
+            //lets build a stringo
+            rec.reason = "";
+        }
+        else if(cropType.getHelpedBy().stream().anyMatch(a -> a.getId().equals(crop.getCropType().getId())))
+        {
+            rec = new CompanionRecommendation();
+            rec.value = 6;
+            rec.impacterId = crop.id;
+            rec.otherCropId = crop.getCropTypeId();
+            //lets build a stringo
+            rec.reason = "";
+        }
+        if(rec != null)
+        {
+            companionRecommendations.add(rec);
+        }
+    }
+
+    void addRotationRecommendation(ConcreteCrop crop, int contentId)
+    {
+        if(crop == null)
+            return;
+        RotationRecommendation rec = rotationRecommendations.stream().filter(r -> r.impacterId.equals(crop.getId())).findFirst().orElse(null);
+        boolean isNew = false;
+        if(rec == null)
+        {
+            isNew = true;
+            rec = new RotationRecommendation();
+        }
+        if(this.cropType.getType() == crop.cropType.getType())
+        {
+            rec.value += -1;
+            if(isNew)
+            {
+                rec.impacterId = crop.getId();
+                rec.otherContentId = contentId;
+                rec.reason = "";
+            }
+        }
+        else if( (Crop.cropCylcle.indexOf(this.cropType.getType()) - 1 == Crop.cropCylcle.indexOf(crop.getCropType().getType())) || ( Crop.cropCylcle.indexOf(this.cropType.getType()) == 0 && Crop.cropCylcle.indexOf(crop.getCropType().getType()) == Crop.cropCylcle.size() - 1 ))
+        {
+            rec.value += 1;
+            if (isNew)
+            {
+                rec.impacterId = crop.getId();
+                rec.otherContentId = contentId;
+                rec.reason = "";
+            }
+        }
+        if(isNew && rec.value != 0)
+        {
+            rotationRecommendations.add(rec);
+        }
+
     }
 
 }
