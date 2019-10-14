@@ -34,10 +34,11 @@ public class Garden
      * @param l
      * @param w
      */
-    public Garden(int l, int w)
+    public Garden(int l, int w, String userId)
     {
         length = l;
         width = w;
+        this.userId = userId;
         GardenContent def = new GardenContent(this, "Default", this.userId);
         this.gardenContents.add(def);
     }

@@ -33,13 +33,13 @@ public class PlantingController {
     {
         float zoomValue = Float.parseFloat(zoom);
         int x1 = Integer.parseInt(startX), y1 = Integer.parseInt(startY), x2 = Integer.parseInt(endX), y2 = Integer.parseInt(endY);
-        return gardenContentRepository.findById(id).orElseThrow(() -> new ContentNotFoundException(id)).getPlantedCropsList(zoomValue, x1, y1, x2, y2);
+        return gardenContentRepository.findByIdAndUserId(id, jwt.getSubject()).orElseThrow(() -> new ContentNotFoundException(id)).getPlantedCropsList(zoomValue, x1, y1, x2, y2);
     }
 
     @PostMapping("/planting/{contentId}")
     public ResponseEntity<Collection<ConcreteCrop>> postCrops(@RequestBody PlantingOperation newPlant, @PathVariable("contentId") int id, @RequestParam String zoom, @RequestParam String startX, @RequestParam String startY, @RequestParam String endX, @RequestParam String endY, @AuthenticationPrincipal Jwt jwt)
     {
-        GardenContent gardenContent = gardenContentRepository.findById(id).orElseThrow(() -> new ContentNotFoundException(id));
+        GardenContent gardenContent = gardenContentRepository.findByIdAndUserId(id, jwt.getSubject()).orElseThrow(() -> new ContentNotFoundException(id));
         float zoomValue = Float.parseFloat(zoom);
         int x1 = Integer.parseInt(startX), y1 = Integer.parseInt(startY), x2 = Integer.parseInt(endX), y2 = Integer.parseInt(endY);
         if(gardenContent.plantCrop(newPlant, zoomValue))
@@ -54,7 +54,7 @@ public class PlantingController {
     @DeleteMapping("/planting/{id}")
     public ResponseEntity<Collection<ConcreteCrop>> deleteCrops(@RequestBody PlantingOperation deletedPlants, @PathVariable("id") int id,@RequestParam String zoom, @RequestParam String startX, @RequestParam String startY, @RequestParam String endX, @RequestParam String endY, @AuthenticationPrincipal Jwt jwt)
     {
-        GardenContent gardenContent = gardenContentRepository.findById(id).orElseThrow(() -> new ContentNotFoundException(id));
+        GardenContent gardenContent = gardenContentRepository.findByIdAndUserId(id, jwt.getSubject()).orElseThrow(() -> new ContentNotFoundException(id));
         float zoomValue = Float.parseFloat(zoom);
         int x1 = Integer.parseInt(startX), y1 = Integer.parseInt(startY), x2 = Integer.parseInt(endX), y2 = Integer.parseInt(endY);
         if(gardenContent.deleteCrops(deletedPlants, zoomValue))

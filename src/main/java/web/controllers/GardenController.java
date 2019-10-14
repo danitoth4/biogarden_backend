@@ -53,9 +53,8 @@ public class GardenController
     @ResponseStatus(HttpStatus.CREATED)
     public Garden postGarden(@RequestBody Garden g, @AuthenticationPrincipal Jwt jwt)
     {
-        Garden garden = new Garden(g.getLength(), g.getWidth());
+        Garden garden = new Garden(g.getLength(), g.getWidth(), jwt.getSubject());
         garden.setName(g.getName());
-        garden.setUserId(jwt.getSubject());
         repository.save(garden);
         return garden;
     }
