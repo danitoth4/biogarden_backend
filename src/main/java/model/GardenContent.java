@@ -4,8 +4,6 @@ import Misc.Cache;
 import Misc.Grid;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import web.errorhandling.GardenException;
-
 import javax.persistence.*;
 import java.awt.*;
 import java.util.*;
@@ -40,14 +38,29 @@ public class GardenContent
     @OneToOne(fetch = FetchType.LAZY)
     public GardenContent after;
 
-    public GardenContent(Garden garden, String name)
+    private String userId;
+
+    public GardenContent(Garden garden, String name, String userId)
     {
         this.garden = garden;
         this.name = name;
+        this.userId = userId;
     }
 
     public GardenContent()
     {}
+
+
+    public String getUserId()
+    {
+        return userId;
+    }
+
+    public void setUserId(String userId)
+    {
+        this.userId = userId;
+    }
+
 
     void initialize()
     {
@@ -141,7 +154,7 @@ public class GardenContent
             {
                 return false;
             }
-            //how many times it fits there in x direction and y direction
+            //how many times does it fit there in x direction and y direction
             int i = x / dm;
             int j = y / dm;
             for (int k = 0; k < i; ++k)
@@ -186,14 +199,11 @@ public class GardenContent
         {
             after.initialize();
             addRotationRecommendation(this, after, cc.getStartX(), cc.getStartY(), cc.getEndX(), cc.getEndY());
-
         }
     }
 
     private static void addRotationRecommendation(GardenContent last, GardenContent current, int startX, int startY, int endX, int endY)
     {
-        //List<ConcreteCrop> onBefore = new LinkedList<>();
-        //List<ConcreteCrop> onCurrently = new LinkedList<>();
         for(int i = startX; i <= endX; ++i)
         {
             for(int j = startY; j <= endY; ++i)

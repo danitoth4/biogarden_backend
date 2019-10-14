@@ -7,6 +7,8 @@ import model.repositories.GardenContentRepository;
 import model.repositories.GardenRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import web.errorhandling.ContentNotFoundException;
 import web.errorhandling.GardenNotFoundException;
@@ -27,7 +29,7 @@ public class PlantingController {
     }
 
     @GetMapping("/planting/{contentId}")
-    public Collection<ConcreteCrop> getPlantedCrops(@PathVariable("contentId") int id, @RequestParam String zoom, @RequestParam String startX, @RequestParam String startY, @RequestParam String endX, @RequestParam String endY)
+    public Collection<ConcreteCrop> getPlantedCrops(@PathVariable("contentId") int id, @RequestParam String zoom, @RequestParam String startX, @RequestParam String startY, @RequestParam String endX, @RequestParam String endY, @AuthenticationPrincipal Jwt jwt)
     {
         float zoomValue = Float.parseFloat(zoom);
         int x1 = Integer.parseInt(startX), y1 = Integer.parseInt(startY), x2 = Integer.parseInt(endX), y2 = Integer.parseInt(endY);
@@ -35,7 +37,7 @@ public class PlantingController {
     }
 
     @PostMapping("/planting/{contentId}")
-    public ResponseEntity<Collection<ConcreteCrop>> postCrops(@RequestBody PlantingOperation newPlant, @PathVariable("contentId") int id, @RequestParam String zoom, @RequestParam String startX, @RequestParam String startY, @RequestParam String endX, @RequestParam String endY)
+    public ResponseEntity<Collection<ConcreteCrop>> postCrops(@RequestBody PlantingOperation newPlant, @PathVariable("contentId") int id, @RequestParam String zoom, @RequestParam String startX, @RequestParam String startY, @RequestParam String endX, @RequestParam String endY, @AuthenticationPrincipal Jwt jwt)
     {
         GardenContent gardenContent = gardenContentRepository.findById(id).orElseThrow(() -> new ContentNotFoundException(id));
         float zoomValue = Float.parseFloat(zoom);
@@ -50,7 +52,7 @@ public class PlantingController {
     }
 
     @DeleteMapping("/planting/{id}")
-    public ResponseEntity<Collection<ConcreteCrop>> deleteCrops(@RequestBody PlantingOperation deletedPlants, @PathVariable("id") int id,@RequestParam String zoom, @RequestParam String startX, @RequestParam String startY, @RequestParam String endX, @RequestParam String endY)
+    public ResponseEntity<Collection<ConcreteCrop>> deleteCrops(@RequestBody PlantingOperation deletedPlants, @PathVariable("id") int id,@RequestParam String zoom, @RequestParam String startX, @RequestParam String startY, @RequestParam String endX, @RequestParam String endY, @AuthenticationPrincipal Jwt jwt)
     {
         GardenContent gardenContent = gardenContentRepository.findById(id).orElseThrow(() -> new ContentNotFoundException(id));
         float zoomValue = Float.parseFloat(zoom);

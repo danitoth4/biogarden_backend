@@ -2,6 +2,8 @@ package web.controllers;
 
 import com.google.common.collect.Lists;
 import model.repositories.CropRepository;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import model.*;
 import web.errorhandling.CropNotFoundException;
@@ -18,20 +20,20 @@ public class CropController {
 
 
     @RequestMapping("/crop")
-    public List<Crop> getCrops()
+    public List<Crop> getCrops(@AuthenticationPrincipal Jwt jwt)
     {
         Iterable<Crop> crops = repository.findAll();
         return Lists.newArrayList(crops);
     }
 
     @RequestMapping("/crop/{id}")
-    public Crop getCrop(@PathVariable("id") int id)
+    public Crop getCrop(@PathVariable("id") int id, @AuthenticationPrincipal Jwt jwt)
     {
         return repository.findById(id).orElseThrow(() -> new CropNotFoundException(id));
     }
 
     @PutMapping("/crop/{id}")
-    public Crop putCrop(@RequestBody Crop crop, @PathVariable int id)
+    public Crop putCrop(@RequestBody Crop crop, @PathVariable int id, @AuthenticationPrincipal Jwt jwt)
     {
 
         return repository.findById(id)
@@ -52,19 +54,19 @@ public class CropController {
     }
 
     @PostMapping("/crop")
-    public Crop postCrop(@RequestBody Crop crop)
+    public Crop postCrop(@RequestBody Crop crop, @AuthenticationPrincipal Jwt jwt)
     {
         return repository.save(crop);
     }
 
 
     @DeleteMapping("/crop/{id}")
-    public void deleteCrop(@PathVariable int id)
+    public void deleteCrop(@PathVariable int id, @AuthenticationPrincipal Jwt jwt)
     {
         CompanionController compController = new CompanionController(this.repository);
-        List<Companion> comps =  compController.getCompanions();
+        List<Companion> comps =  compController.getCompanions(jwt);
         comps.removeIf(cmp ->  !cmp.getCropId1().equals(id) && !cmp.getCropId2().equals(id));
-        compController.DeleteCompanions(comps);
+        compController.DeleteCompanions(comps, jwt);
         repository.deleteById(id);
     }
 }

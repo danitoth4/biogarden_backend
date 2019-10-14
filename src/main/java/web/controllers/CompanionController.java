@@ -8,6 +8,8 @@ import java.util.*;
 import model.Crop;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import web.Util.UpdateMethod;
 import web.errorhandling.CropNotFoundException;
@@ -105,14 +107,14 @@ public class CompanionController
 
 
     @GetMapping("/companions")
-    public List<Companion> getCompanions()
+    public List<Companion> getCompanions(@AuthenticationPrincipal Jwt jwt)
     {
         initializeCompanions(repository);
         return new ArrayList<Companion>(companions);
     }
 
     @GetMapping("/companions/{id}")
-    public List<Companion> getCompanionsForCrop(@PathVariable("id") int id)
+    public List<Companion> getCompanionsForCrop(@PathVariable("id") int id, @AuthenticationPrincipal Jwt jwt)
     {
         initializeCompanions(repository);
         List<Companion> toreturn = new ArrayList<>();
@@ -133,13 +135,13 @@ public class CompanionController
     }
 
     @PostMapping("/companions")
-    public void PostCompanions(@RequestBody List<Companion> newCompanions)
+    public void PostCompanions(@RequestBody List<Companion> newCompanions, @AuthenticationPrincipal Jwt jwt)
     {
         updateCompanions(newCompanions, UpdateMethod.ADDED, repository);
     }
 
     @DeleteMapping("/companions")
-    public void DeleteCompanions(@RequestBody List<Companion> deletedCompanions)
+    public void DeleteCompanions(@RequestBody List<Companion> deletedCompanions, @AuthenticationPrincipal Jwt jwt)
     {
         updateCompanions(deletedCompanions, UpdateMethod.DELETED, repository);
     }
