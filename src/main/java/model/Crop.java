@@ -40,6 +40,7 @@ public class Crop {
 
     private CropType type;
 
+    private String userId;
 
     @ManyToMany
     @JsonIgnore
@@ -175,5 +176,15 @@ public class Crop {
     public void setType(CropType type)
     {
         this.type = type;
+    }
+
+    public String getUserId()
+    {
+        return userId;
+    }
+
+    public void setUserId(String userId)
+    {
+        this.userId = userId;
     }
 }

@@ -18,6 +18,8 @@ public class Garden
 
     private Integer width;
 
+    private String userId;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "garden", cascade = CascadeType.ALL)
     private List<GardenContent> gardenContents = new ArrayList<>();
 
@@ -32,11 +34,12 @@ public class Garden
      * @param l
      * @param w
      */
-    public Garden(int l, int w)
+    public Garden(int l, int w, String userId)
     {
         length = l;
         width = w;
-        GardenContent def = new GardenContent(this, "Default");
+        this.userId = userId;
+        GardenContent def = new GardenContent(this, "Default", this.userId);
         this.gardenContents.add(def);
     }
 
@@ -73,6 +76,16 @@ public class Garden
     public void setGardenContent(List<GardenContent> gardenContents)
     {
         this.gardenContents = gardenContents;
+    }
+
+    public String getUserId()
+    {
+        return userId;
+    }
+
+    public void setUserId(String userId)
+    {
+        this.userId = userId;
     }
 
 }

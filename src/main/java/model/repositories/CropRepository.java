@@ -3,6 +3,8 @@ package model.repositories;
 import model.Crop;
 import org.springframework.data.repository.CrudRepository;
 
-public interface CropRepository extends CrudRepository<Crop, Integer> {
+import java.util.List;
 
+public interface CropRepository extends CrudRepository<Crop, Integer> {
+    List<Crop> findAllByUserId(String userId);
 }
