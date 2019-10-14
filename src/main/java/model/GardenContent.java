@@ -46,6 +46,9 @@ public class GardenContent
         this.name = name;
     }
 
+    public GardenContent()
+    {}
+
     void initialize()
     {
         //first we check if the map is null

@@ -48,6 +48,7 @@ public class ConcreteCrop
 
     public ConcreteCrop()
     {
+        if(id == null)
         id = java.util.UUID.randomUUID().toString();
     }
 

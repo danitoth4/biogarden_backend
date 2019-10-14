@@ -6,7 +6,6 @@ import javax.persistence.*;
 public class Recommendation
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     public String id;
 
     public String reason;
@@ -17,4 +16,10 @@ public class Recommendation
     public ConcreteCrop impactedCrop;
 
     public String impacterId;
+
+    public Recommendation()
+    {
+        if(id == null)
+            id = java.util.UUID.randomUUID().toString();
+    }
 }
