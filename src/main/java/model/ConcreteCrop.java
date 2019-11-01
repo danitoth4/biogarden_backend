@@ -2,6 +2,7 @@ package model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.awt.*;
@@ -15,6 +16,8 @@ public class ConcreteCrop
 {
     @Id
     @JsonProperty("id")
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -41,15 +44,14 @@ public class ConcreteCrop
     private Crop cropType;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "impactedCrop", cascade = CascadeType.ALL)
-    public List<CompanionRecommendation> companionRecommendations = new ArrayList<>();
+    public List<Recommendation> recommendations = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "impactedCrop", cascade = CascadeType.ALL)
-    public List<RotationRecommendation> rotationRecommendations = new ArrayList<>();
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "impacterCrop", cascade = CascadeType.ALL)
+    public List<Recommendation> impactedRecommendations = new ArrayList<>();
 
     public ConcreteCrop()
     {
-        if(id == null)
-        id = java.util.UUID.randomUUID().toString();
+        //id = java.util.UUID.randomUUID().toString();
     }
 
     /**
@@ -59,7 +61,7 @@ public class ConcreteCrop
      */
     public ConcreteCrop(Crop type)
     {
-        id = java.util.UUID.randomUUID().toString();
+        //id = java.util.UUID.randomUUID().toString();
         cropType = type;
     }
 
@@ -151,7 +153,8 @@ public class ConcreteCrop
         {
             rec = new CompanionRecommendation();
             rec.value = -6;
-            rec.impacterId = crop.id;
+            rec.impactedCrop = this;
+            rec.impacterCrop = crop;
             rec.otherCropId = crop.getCropTypeId();
             //lets build a stringo
             rec.reason = "";
@@ -160,14 +163,16 @@ public class ConcreteCrop
         {
             rec = new CompanionRecommendation();
             rec.value = 6;
-            rec.impacterId = crop.id;
+            rec.impactedCrop = this;
+            rec.impacterCrop = crop;
             rec.otherCropId = crop.getCropTypeId();
             //lets build a stringo
             rec.reason = "";
         }
         if(rec != null)
         {
-            companionRecommendations.add(rec);
+            crop.recommendations.add(rec);
+            recommendations.add(rec);
         }
     }
 
@@ -175,7 +180,8 @@ public class ConcreteCrop
     {
         if(crop == null)
             return;
-        RotationRecommendation rec = rotationRecommendations.stream().filter(r -> r.impacterId.equals(crop.getId())).findFirst().orElse(null);
+        //
+        RotationRecommendation rec = (RotationRecommendation)recommendations.stream().filter(r -> r.impacterCrop.id.equals(crop.getId())).findFirst().orElse(null);
         boolean isNew = false;
         if(rec == null)
         {
@@ -187,7 +193,8 @@ public class ConcreteCrop
             rec.value += -1;
             if(isNew)
             {
-                rec.impacterId = crop.getId();
+                rec.impactedCrop = this;
+                rec.impacterCrop = crop;
                 rec.otherContentId = contentId;
                 rec.reason = "";
             }
@@ -197,14 +204,16 @@ public class ConcreteCrop
             rec.value += 1;
             if (isNew)
             {
-                rec.impacterId = crop.getId();
+                rec.impactedCrop = this;
+                rec.impacterCrop = crop;
                 rec.otherContentId = contentId;
                 rec.reason = "";
             }
         }
         if(isNew && rec.value != 0)
         {
-            rotationRecommendations.add(rec);
+            crop.recommendations.add(rec);
+            recommendations.add(rec);
         }
 
     }

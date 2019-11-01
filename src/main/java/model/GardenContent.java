@@ -257,12 +257,22 @@ public class GardenContent
         }
         for (Map.Entry<Point, String> entry : plantedCrops.entrySet())
         {
-            ConcreteCrop cc = plantedCropsList.stream().filter(c -> c.getId().equals(entry.getValue())).findAny().orElse(null);
-            if (cc != null && Grid.isOverlapping(cc.getStartX(), cc.getStartY(), cc.getEndX(), cc.getEndY(), po.getX1(), po.getY1(), po.getX2(), po.getY2()))
+            if (entry.getValue() != null)
             {
-                plantedCropsList.remove(cc);
-                plantedCrops.replace(entry.getKey(), null);
+                try
+                {
+                    ConcreteCrop cc = plantedCropsList.stream().filter(c -> c.getId().equals(entry.getValue())).findAny().orElse(null);
+                    if (cc != null && Grid.isOverlapping(cc.getStartX(), cc.getStartY(), cc.getEndX(), cc.getEndY(), po.getX1(), po.getY1(), po.getX2(), po.getY2()))
+                    {
+                        plantedCropsList.remove(cc);
+                        plantedCrops.replace(entry.getKey(), null);
 
+                    }
+                }
+                catch(Exception e)
+                {
+                    System.out.print(e.toString());
+                }
             }
         }
         return true;

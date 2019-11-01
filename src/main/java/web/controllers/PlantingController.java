@@ -3,6 +3,7 @@ package web.controllers;
 import Misc.Cache;
 import model.*;
 import model.repositories.ConcreteCropRepository;
+import model.repositories.CropRepository;
 import model.repositories.GardenContentRepository;
 import model.repositories.GardenRepository;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import web.errorhandling.ContentNotFoundException;
+import web.errorhandling.CropNotFoundException;
 import web.errorhandling.GardenNotFoundException;
 
 import java.util.*;
@@ -22,10 +24,13 @@ public class PlantingController {
 
     private final ConcreteCropRepository concreteCropRepository;
 
-    public PlantingController(GardenContentRepository gardenContentRepository, ConcreteCropRepository concreteCropRepository)
+    private final CropRepository cropRepository;
+
+    public PlantingController(GardenContentRepository gardenContentRepository, ConcreteCropRepository concreteCropRepository, CropRepository cropRepository)
     {
         this.gardenContentRepository = gardenContentRepository;
         this.concreteCropRepository = concreteCropRepository;
+        this.cropRepository = cropRepository;
     }
 
     @GetMapping("/planting/{contentId}")
@@ -39,6 +44,8 @@ public class PlantingController {
     @PostMapping("/planting/{contentId}")
     public ResponseEntity<Collection<ConcreteCrop>> postCrops(@RequestBody PlantingOperation newPlant, @PathVariable("contentId") int id, @RequestParam String zoom, @RequestParam String startX, @RequestParam String startY, @RequestParam String endX, @RequestParam String endY, @AuthenticationPrincipal Jwt jwt)
     {
+        Crop newCrop = cropRepository.findById(newPlant.getCropId()).orElseThrow(() -> new CropNotFoundException(newPlant.getCropId()));
+        newPlant.setCrop(newCrop);
         GardenContent gardenContent = gardenContentRepository.findByIdAndUserId(id, jwt.getSubject()).orElseThrow(() -> new ContentNotFoundException(id));
         float zoomValue = Float.parseFloat(zoom);
         int x1 = Integer.parseInt(startX), y1 = Integer.parseInt(startY), x2 = Integer.parseInt(endX), y2 = Integer.parseInt(endY);

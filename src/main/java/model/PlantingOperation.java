@@ -6,6 +6,8 @@ public class PlantingOperation {
 
     private Crop crop;
 
+    private Integer cropId;
+
     private int x1;
 
     private int y1;
@@ -20,6 +22,16 @@ public class PlantingOperation {
 
     public void setCrop(Crop crop) {
         this.crop = crop;
+    }
+
+    public Integer getCropId()
+    {
+        return cropId;
+    }
+
+    public void setCropId(Integer cropId)
+    {
+        this.cropId = cropId;
     }
 
     public int getX1() {
