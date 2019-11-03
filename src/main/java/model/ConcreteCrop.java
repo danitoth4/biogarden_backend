@@ -152,30 +152,21 @@ public class ConcreteCrop
     void addCompanionRecommendation(ConcreteCrop crop)
     {
         CompanionRecommendation rec = null;
-        if(cropType.getAvoids().stream().anyMatch(a -> a.getId().equals(crop.getCropType().getId())))
+        Companion companion = cropType.getImpactedBy().stream().filter(comp -> comp.getImpacting().getId().equals(crop.getCropType().getId())).findAny().orElse(null);
+        if(companion != null)
         {
-            rec = createCompanionRecommendation(crop, false);
-        }
-        else if(cropType.getHelpedBy().stream().anyMatch(a -> a.getId().equals(crop.getCropType().getId())))
-        {
-            rec = createCompanionRecommendation(crop, true);
+            rec = new CompanionRecommendation();
+            rec.value = companion.getPositive() ? 6 : -6;
+            rec.impactedCrop = this;
+            rec.impacterCrop = crop;
+            rec.otherCropId = crop.getCropTypeId();
+            rec.reason = String.format("%s is a %s companion for %s", crop.getCropType().getName(), companion.getPositive() ? "good" : "bad", this.getCropType().getName());
+            rec.setCompanion(companion);
         }
         if(rec != null)
         {
-            crop.recommendations.add(rec);
             recommendations.add(rec);
         }
-    }
-
-    private CompanionRecommendation createCompanionRecommendation(ConcreteCrop other, boolean isPositive)
-    {
-        CompanionRecommendation rec = new CompanionRecommendation();
-        rec.value = isPositive ? 6 : -6;
-        rec.impactedCrop = this;
-        rec.impacterCrop = other;
-        rec.otherCropId = other.getCropTypeId();
-        rec.reason = String.format("%s is a %s companion for %s", other.getCropType().getName(), isPositive ? "good" : "bad", this.getCropType().getName());
-        return rec;
     }
 
     void addRotationRecommendation(ConcreteCrop crop, int contentId)

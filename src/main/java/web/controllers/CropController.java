@@ -63,10 +63,10 @@ public class CropController {
     @DeleteMapping("/crop/{id}")
     public void deleteCrop(@PathVariable int id, @AuthenticationPrincipal Jwt jwt)
     {
-        CompanionController compController = new CompanionController(this.repository);
+        /*CompanionController compController = new CompanionController(this.repository);
         List<Companion> comps =  compController.getCompanions(jwt);
         comps.removeIf(cmp ->  !cmp.getCropId1().equals(id) && !cmp.getCropId2().equals(id));
-        compController.DeleteCompanions(comps, jwt);
+        compController.DeleteCompanions(comps, jwt);*/
         repository.deleteById(id);
     }
 }

@@ -1,29 +1,57 @@
 package model;
 
-import java.util.Objects;
+import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
 public class Companion {
 
-    private Integer cropId1;
+    @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    private String id;
 
-    private  Integer cropId2;
+    @ManyToOne
+    private Crop impacting;
+
+    @ManyToOne
+    private  Crop impacted;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "companion")
+    private List<CompanionRecommendation> recommendations = new ArrayList<>();
 
     private Boolean isPositive;
 
-    public Integer getCropId1() {
-        return cropId1;
+    public String getId()
+    {
+        return id;
     }
 
-    public void setCropId1(Integer cropId1) {
-        this.cropId1 = cropId1;
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+    public Crop getImpacting()
+    {
+        return impacting;
     }
 
-    public Integer getCropId2() {
-        return cropId2;
+    public void setImpacting(Crop impacting)
+    {
+        this.impacting = impacting;
     }
 
-    public void setCropId2(Integer cropId2) {
-        this.cropId2 = cropId2;
+    public Crop getImpacted()
+    {
+        return impacted;
+    }
+
+    public void setImpacted(Crop impacted)
+    {
+        this.impacted = impacted;
     }
 
     public Boolean getPositive() {
@@ -34,23 +62,4 @@ public class Companion {
         isPositive = positive;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if(!o.getClass().equals(Companion.class))
-        {
-            return false;
-        }
-        Companion other = (Companion)o;
-
-        return !((!other.cropId1.equals(this.cropId1) && !other.cropId1.equals(this.cropId2)) || (!other.cropId2.equals(this.cropId1) && !other.cropId2.equals(this.cropId2)));
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int h1 = Objects.hash(cropId1, cropId2);
-        int h2 = Objects.hash(cropId2, cropId1);
-
-        return h1 >= h2 ? h1 : h2;
-    }
 }

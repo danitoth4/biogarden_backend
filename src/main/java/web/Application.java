@@ -1,5 +1,6 @@
 package web;
 
+import model.Companion;
 import model.Crop;
 import model.repositories.CropRepository;
 import org.slf4j.*;
@@ -35,10 +36,11 @@ public class Application {
             c.setDiameter(2);
             for(Crop crop : repository.findAll())
             {
-                if(crop.getId() == 2)
-                    c.getAvoids().add(crop);
-                else
-                    c.getHelps().add(crop);
+                Companion comp = new Companion();
+                comp.setPositive(crop.getId() == 2);
+                comp.setImpacted(crop);
+                comp.setImpacting(c);
+                c.addToImpacts(comp);
             }
 
             repository.save(c);

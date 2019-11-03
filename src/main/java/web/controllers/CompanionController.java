@@ -1,6 +1,8 @@
 package web.controllers;
 
+import com.google.common.collect.Lists;
 import model.Companion;
+import model.repositories.CompanionRepository;
 import model.repositories.CropRepository;
 
 import java.util.*;
@@ -18,132 +20,35 @@ import web.errorhandling.CropNotFoundException;
 public class CompanionController
 {
 
-    private final CropRepository repository;
+    private final CompanionRepository repository;
 
-    private static HashSet<Companion> companions;
-
-    private static final Logger log = LoggerFactory.getLogger(CompanionController.class);
-
-    public CompanionController(CropRepository cropRepository)
+    public CompanionController(CompanionRepository companionRepository)
     {
-        repository = cropRepository;
+        this.repository = companionRepository;
     }
-
-    private static void initializeCompanions(CropRepository repo)
-    {
-        if (companions == null || companions.isEmpty())
-        {
-            companions = new HashSet<>();
-
-            boolean warning = false;
-
-            for (Crop crop : repo.findAll())
-            {
-                for (Crop c : crop.getAvoids())
-                {
-                    if (!createAndAddCompanion(false, crop, c))
-                        warning = true;
-
-                }
-                for (Crop c : crop.getHelps())
-                {
-                    if (!createAndAddCompanion(true, crop, c))
-                        warning = true;
-                }
-            }
-            if (warning)
-                log.warn("multiple relationships between same entities");
-        }
-    }
-
-    private static boolean createAndAddCompanion(boolean isPositive, Crop first, Crop second)
-    {
-        Companion newCompanion = new Companion();
-        newCompanion.setCropId1(first.getId());
-        newCompanion.setCropId2(second.getId());
-        newCompanion.setPositive(isPositive);
-        return createAndAddCompanion(newCompanion);
-
-    }
-
-    private static boolean createAndAddCompanion(Companion newCompanion)
-    {
-        return companions.add(newCompanion);
-    }
-
-    private void updateCompanions(List<Companion> updatedEntries, UpdateMethod method, CropRepository repo)
-    {
-        initializeCompanions(repository);
-        for (Companion c : updatedEntries)
-        {
-            Crop crop1 = repo.findById(c.getCropId1()).orElseThrow(() -> new CropNotFoundException(c.getCropId1()));
-            Crop crop2 = repo.findById(c.getCropId2()).orElseThrow(() -> new CropNotFoundException(c.getCropId2()));
-            if (method == UpdateMethod.ADDED)
-            {
-                if (c.getPositive())
-                {
-                    crop1.getHelps().add(crop2);
-                } else
-                {
-                    crop1.getAvoids().add(crop2);
-                }
-                createAndAddCompanion(c);
-
-            }
-            if (method == UpdateMethod.DELETED)
-            {
-                if (c.getPositive())
-                {
-                    crop1.getHelps().remove(crop2);
-                } else
-                {
-                    crop1.getAvoids().remove(crop2);
-                }
-                companions.remove(c);
-            }
-            repository.save(crop1);
-        }
-    }
-
-
+    
     @GetMapping("/companions")
     public List<Companion> getCompanions(@AuthenticationPrincipal Jwt jwt)
     {
-        initializeCompanions(repository);
-        return new ArrayList<Companion>(companions);
+        Iterable<Companion> companions = repository.findAll();
+        return Lists.newArrayList(companions);
     }
 
     @GetMapping("/companions/{id}")
     public List<Companion> getCompanionsForCrop(@PathVariable("id") int id, @AuthenticationPrincipal Jwt jwt)
     {
-        initializeCompanions(repository);
-        List<Companion> toreturn = new ArrayList<>();
-        for(Companion c : companions)
-        {
-            if(c.getCropId1().equals(id))
-            {
-                toreturn.add(c);
-            } else if(c.getCropId2().equals(id))
-            {
-                int temp = c.getCropId1();
-                c.setCropId1(c.getCropId2());
-                c.setCropId2(temp);
-                toreturn.add(c);
-            }
-        }
-        return toreturn;
+        Iterable<Companion> companions = repository.findAll();
+        return Lists.newArrayList(companions);
     }
 
     @PostMapping("/companions")
     public void PostCompanions(@RequestBody List<Companion> newCompanions, @AuthenticationPrincipal Jwt jwt)
     {
-        updateCompanions(newCompanions, UpdateMethod.ADDED, repository);
     }
 
     @DeleteMapping("/companions")
     public void DeleteCompanions(@RequestBody List<Companion> deletedCompanions, @AuthenticationPrincipal Jwt jwt)
     {
-        updateCompanions(deletedCompanions, UpdateMethod.DELETED, repository);
     }
 
 

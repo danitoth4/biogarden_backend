@@ -42,21 +42,13 @@ public class Crop {
 
     private String userId;
 
-    @ManyToMany
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "impacting")
     @JsonIgnore
-    private Set<Crop> helps = new HashSet<>();
+    private Set<Companion> impacts = new HashSet<>();
 
-    @ManyToMany(mappedBy = "helps")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "impacted")
     @JsonIgnore
-    private Set<Crop> helpedBy = new HashSet<>();
-
-    @ManyToMany
-    @JsonIgnore
-    private Set<Crop> avoids = new HashSet<>();
-
-    @ManyToMany(mappedBy = "avoids")
-    @JsonIgnore
-    private Set<Crop> avoidedBy = new HashSet<>();
+    private Set<Companion> impactedBy = new HashSet<>();
 
     public Crop()
     {
@@ -127,39 +119,6 @@ public class Crop {
         this.height = height;
     }
 
-    public Set<Crop> getHelps() {
-        return helps;
-    }
-
-    public void setHelps(Set<Crop> helps) {
-        this.helps = helps;
-    }
-
-    public Set<Crop> getHelpedBy() {
-        return helpedBy;
-    }
-
-    public void setHelpedBy(Set<Crop> helpedBy) {
-        this.helpedBy = helpedBy;
-    }
-
-    public Set<Crop> getAvoids() { return avoids;}
-
-    public void setAvoids(Set<Crop> avoids) {
-        this.avoids = avoids;
-    }
-
-
-    public Set<Crop> getAvoidedBy()
-    {
-        return avoidedBy;
-    }
-
-    public void setAvoidedBy(Set<Crop> avoidedBy)
-    {
-        this.avoidedBy = avoidedBy;
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }
@@ -176,6 +135,36 @@ public class Crop {
     public void setType(CropType type)
     {
         this.type = type;
+    }
+
+    public Set<Companion> getImpacts()
+    {
+        return impacts;
+    }
+
+    public void setImpacts(Set<Companion> impacts)
+    {
+        this.impacts = impacts;
+    }
+
+    public boolean addToImpacts(Companion companion)
+    {
+        return this.impacts.add(companion);
+    }
+
+    public Set<Companion> getImpactedBy()
+    {
+        return impactedBy;
+    }
+
+    public void setImpactedBy(Set<Companion> impactedBy)
+    {
+        this.impactedBy = impactedBy;
+    }
+
+    public boolean addToImpactedBy(Companion companion)
+    {
+        return this.impactedBy.add(companion);
     }
 
     public String getUserId()
