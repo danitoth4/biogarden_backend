@@ -15,7 +15,6 @@ import java.util.List;
 public class ConcreteCrop
 {
     @Id
-    @JsonProperty("id")
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
@@ -43,17 +42,17 @@ public class ConcreteCrop
     @JsonIgnore
     private Crop cropType;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "impactedCrop", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "impactedCrop", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Recommendation> recommendations = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "impacterCrop", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "impacterCrop", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Recommendation> impactedRecommendations = new ArrayList<>();
+
 
     public ConcreteCrop()
     {
-        //id = java.util.UUID.randomUUID().toString();
-    }
 
+    }
     /**
      * Initializes a new ConcreteCrop instance.
      *
@@ -61,7 +60,6 @@ public class ConcreteCrop
      */
     public ConcreteCrop(Crop type)
     {
-        //id = java.util.UUID.randomUUID().toString();
         cropType = type;
     }
 
@@ -138,7 +136,12 @@ public class ConcreteCrop
 
     public Short getPreferenceValue()
     {
-        return preferenceValue;
+        short prefValue = 0;
+        for(Recommendation recommendation : recommendations)
+        {
+            prefValue += recommendation.value;
+        }
+        return prefValue;
     }
 
     public Crop getCropType()
@@ -151,29 +154,28 @@ public class ConcreteCrop
         CompanionRecommendation rec = null;
         if(cropType.getAvoids().stream().anyMatch(a -> a.getId().equals(crop.getCropType().getId())))
         {
-            rec = new CompanionRecommendation();
-            rec.value = -6;
-            rec.impactedCrop = this;
-            rec.impacterCrop = crop;
-            rec.otherCropId = crop.getCropTypeId();
-            //lets build a stringo
-            rec.reason = "";
+            rec = createCompanionRecommendation(crop, false);
         }
         else if(cropType.getHelpedBy().stream().anyMatch(a -> a.getId().equals(crop.getCropType().getId())))
         {
-            rec = new CompanionRecommendation();
-            rec.value = 6;
-            rec.impactedCrop = this;
-            rec.impacterCrop = crop;
-            rec.otherCropId = crop.getCropTypeId();
-            //lets build a stringo
-            rec.reason = "";
+            rec = createCompanionRecommendation(crop, true);
         }
         if(rec != null)
         {
             crop.recommendations.add(rec);
             recommendations.add(rec);
         }
+    }
+
+    private CompanionRecommendation createCompanionRecommendation(ConcreteCrop other, boolean isPositive)
+    {
+        CompanionRecommendation rec = new CompanionRecommendation();
+        rec.value = isPositive ? 6 : -6;
+        rec.impactedCrop = this;
+        rec.impacterCrop = other;
+        rec.otherCropId = other.getCropTypeId();
+        rec.reason = String.format("%s is a %s companion for %s", other.getCropType().getName(), isPositive ? "good" : "bad", this.getCropType().getName());
+        return rec;
     }
 
     void addRotationRecommendation(ConcreteCrop crop, int contentId)

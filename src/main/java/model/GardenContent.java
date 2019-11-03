@@ -4,6 +4,8 @@ import Misc.Cache;
 import Misc.Grid;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import model.repositories.ConcreteCropRepository;
+
 import javax.persistence.*;
 import java.awt.*;
 import java.util.*;
@@ -244,38 +246,22 @@ public class GardenContent
             po.setY1(po.getY2());
             po.setY2(temp);
         }
-
-        return !(!plantedCrops.containsKey(new Point(po.getX1(), po.getY1())) || !plantedCrops.containsKey(new Point(po.getX2() - 1, po.getY2() - 1)));
+        return (po.getX1() >= 0 && po.getY1() >= 0 && po.getX2() < this.garden.getWidth() && po.getY2() < this.garden.getLength());
     }
 
-    public boolean deleteCrops(PlantingOperation po, double zoom)
+    public List<ConcreteCrop> deleteCrops(PlantingOperation po, double zoom)
     {
-        initialize();
         if (!validatePosition(po))
         {
-            return false;
+            return new LinkedList<>();
         }
-        for (Map.Entry<Point, String> entry : plantedCrops.entrySet())
+        LinkedList<ConcreteCrop> toReturn = new LinkedList<>();
+        for(ConcreteCrop cc : plantedCropsList.stream().filter(c -> Grid.isOverlapping(c.getStartX(), c.getStartY(), c.getEndX(), c.getEndY(), po.getX1(), po.getY1(), po.getX2(), po.getY2())).collect(Collectors.toList()))
         {
-            if (entry.getValue() != null)
-            {
-                try
-                {
-                    ConcreteCrop cc = plantedCropsList.stream().filter(c -> c.getId().equals(entry.getValue())).findAny().orElse(null);
-                    if (cc != null && Grid.isOverlapping(cc.getStartX(), cc.getStartY(), cc.getEndX(), cc.getEndY(), po.getX1(), po.getY1(), po.getX2(), po.getY2()))
-                    {
-                        plantedCropsList.remove(cc);
-                        plantedCrops.replace(entry.getKey(), null);
-
-                    }
-                }
-                catch(Exception e)
-                {
-                    System.out.print(e.toString());
-                }
-            }
+            plantedCropsList.remove(cc);
+            toReturn.add(cc);
         }
-        return true;
+        return toReturn;
     }
 
 }

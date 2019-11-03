@@ -64,12 +64,16 @@ public class PlantingController {
         GardenContent gardenContent = gardenContentRepository.findByIdAndUserId(id, jwt.getSubject()).orElseThrow(() -> new ContentNotFoundException(id));
         float zoomValue = Float.parseFloat(zoom);
         int x1 = Integer.parseInt(startX), y1 = Integer.parseInt(startY), x2 = Integer.parseInt(endX), y2 = Integer.parseInt(endY);
-        if(gardenContent.deleteCrops(deletedPlants, zoomValue))
+        /*if(gardenContent.deleteCrops(deletedPlants, zoomValue))
         {
             gardenContentRepository.save(gardenContent);
             Cache.tryStoreGardeninCache(id, gardenContent.plantedCrops);
             return new ResponseEntity<>(gardenContent.getPlantedCropsList(zoomValue, x1, y1, x2, y2), HttpStatus.OK);
+        }*/
+        for(ConcreteCrop cc : gardenContent.deleteCrops(deletedPlants, zoomValue))
+        {
+            concreteCropRepository.deleteById(cc.getId());
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(gardenContent.getPlantedCropsList(zoomValue, x1, y1, x2, y2), HttpStatus.OK);
     }
 }

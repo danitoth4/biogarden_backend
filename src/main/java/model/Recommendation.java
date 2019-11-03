@@ -1,8 +1,7 @@
 package model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -10,6 +9,8 @@ import javax.persistence.*;
 public class Recommendation
 {
     @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     public String id;
 
     public String reason;
@@ -18,17 +19,13 @@ public class Recommendation
 
     @ManyToOne
     @JsonIgnore
-    @NotFound(action = NotFoundAction.IGNORE)
     public ConcreteCrop impactedCrop;
 
     @ManyToOne
     @JsonIgnore
-    @NotFound(action = NotFoundAction.IGNORE)
     public ConcreteCrop impacterCrop;
 
     public Recommendation()
     {
-        if(id == null)
-            id = java.util.UUID.randomUUID().toString();
     }
 }

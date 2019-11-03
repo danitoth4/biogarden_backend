@@ -3,6 +3,6 @@ package model.repositories;
 import model.ConcreteCrop;
 import org.springframework.data.repository.CrudRepository;
 
-public interface ConcreteCropRepository extends CrudRepository<ConcreteCrop, Integer>
+public interface ConcreteCropRepository extends CrudRepository<ConcreteCrop, String>
 {
 }
