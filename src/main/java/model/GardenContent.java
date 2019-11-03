@@ -246,7 +246,7 @@ public class GardenContent
             po.setY1(po.getY2());
             po.setY2(temp);
         }
-        return (po.getX1() >= 0 && po.getY1() >= 0 && po.getX2() < this.garden.getWidth() && po.getY2() < this.garden.getLength());
+        return (po.getX1() >= 0 && po.getY1() >= 0 && po.getX2() <= this.garden.getWidth() && po.getY2() <= this.garden.getLength());
     }
 
     public List<ConcreteCrop> deleteCrops(PlantingOperation po, double zoom)
