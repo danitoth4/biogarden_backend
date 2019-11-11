@@ -2,6 +2,8 @@ package web.controllers;
 
 import com.google.common.collect.Lists;
 import model.repositories.CropRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,7 @@ public class CropController {
     @RequestMapping("/crop")
     public List<Crop> getCrops(@AuthenticationPrincipal Jwt jwt)
     {
-        Iterable<Crop> crops = repository.findAll();
+        Iterable<Crop> crops = repository.findAllByUserId(jwt.getSubject());
         return Lists.newArrayList(crops);
     }
 
@@ -33,40 +35,32 @@ public class CropController {
     }
 
     @PutMapping("/crop/{id}")
-    public Crop putCrop(@RequestBody Crop crop, @PathVariable int id, @AuthenticationPrincipal Jwt jwt)
+    public ResponseEntity<Crop> putCrop(@RequestBody Crop crop, @PathVariable int id, @AuthenticationPrincipal Jwt jwt)
     {
-
-        return repository.findById(id)
-                .map(c -> {
-                    c.setName(crop.getName());
-                    c.setBinomialName(crop.getBinomialName());
-                    c.setDescription(crop.getDescription());
-                    c.setSowingMethod(crop.getSowingMethod());
-                    c.setDiameter(crop.getDiameter());
-                    c.setRowSpacing(crop.getRowSpacing());
-                    c.setHeight(crop.getHeight());
-                    return repository.save(c);
-                })
-                .orElseGet(() -> {
-                    crop.setId(id);
-                    return repository.save(crop);
-                });
+        Crop updatedCrop = repository.findByIdAndUserId(id, jwt.getSubject()).orElse(null);
+        if(updatedCrop == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        updatedCrop = crop;
+        updatedCrop.setId(id);
+        updatedCrop.setUserId(jwt.getSubject());
+        return new ResponseEntity<>(repository.save(updatedCrop), HttpStatus.OK);
     }
 
     @PostMapping("/crop")
     public Crop postCrop(@RequestBody Crop crop, @AuthenticationPrincipal Jwt jwt)
     {
+        crop.setUserId(jwt.getSubject());
         return repository.save(crop);
     }
 
 
     @DeleteMapping("/crop/{id}")
-    public void deleteCrop(@PathVariable int id, @AuthenticationPrincipal Jwt jwt)
+    public ResponseEntity deleteCrop(@PathVariable int id, @AuthenticationPrincipal Jwt jwt)
     {
-        /*CompanionController compController = new CompanionController(this.repository);
-        List<Companion> comps =  compController.getCompanions(jwt);
-        comps.removeIf(cmp ->  !cmp.getCropId1().equals(id) && !cmp.getCropId2().equals(id));
-        compController.DeleteCompanions(comps, jwt);*/
-        repository.deleteById(id);
+        Crop deletedCrop = repository.findByIdAndUserId(id, jwt.getSubject()).orElse(null);
+        if(deletedCrop == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        repository.delete(deletedCrop);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }
