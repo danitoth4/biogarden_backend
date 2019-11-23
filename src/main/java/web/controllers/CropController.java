@@ -24,7 +24,7 @@ public class CropController {
     @RequestMapping("/crop")
     public List<Crop> getCrops(@AuthenticationPrincipal Jwt jwt)
     {
-        Iterable<Crop> crops = repository.findAllByUserId(jwt.getSubject());
+        Iterable<Crop> crops = repository.findAll();//ByUserId(jwt.getSubject());
         return Lists.newArrayList(crops);
     }
 

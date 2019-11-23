@@ -1,8 +1,8 @@
 package model.repositories;
 
 import model.Companion;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CompanionRepository extends CrudRepository<Companion, String>
+public interface CompanionRepository extends JpaRepository<Companion, String>
 {
 }

@@ -234,7 +234,6 @@ public class GardenContent
             {
                 for (int l = 0; l < j; ++l)
                 {
-                    //maybe this works, i have no idea
                     ConcreteCrop plantedCrop = new ConcreteCrop(po.getCrop());
                     plantedCrop.setGarden(this);
                     plantedCrop.setStartX(po.getX1() + k * dm);
