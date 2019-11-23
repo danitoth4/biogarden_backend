@@ -4,20 +4,20 @@ import java.awt.*;
 
 public class Grid
 {
-    public static boolean isOverlapping(Point topleft1, Point bottomright1, Point topleft2, Point bottomright2)
+    public static boolean isOverlapping(Point topLeft1, Point bottomRight1, Point topLeft2, Point bottomRight2)
     {
-        if (topleft1.getY() >= bottomright2.getY() || bottomright1.getY() <= topleft2.getY())
+        if (topLeft1.getY() >= bottomRight2.getY() || bottomRight1.getY() <= topLeft2.getY())
             return false;
-        if (topleft1.getX() >= bottomright2.getX() || bottomright1.getX() <= topleft2.getX())
+        if (topLeft1.getX() >= bottomRight2.getX() || bottomRight1.getX() <= topLeft2.getX())
             return false;
         return true;
     }
 
-    public static boolean isOverlapping(int topleft1X, int topleft1Y, int bottomright1X, int bottomright1Y, int topleft2X, int topleft2Y, int bottomright2X, int bottomright2Y)
+    public static boolean isOverlapping(int topLeft1X, int topLeft1Y, int bottomRight1X, int bottomRight1Y, int topLeft2X, int topLeft2Y, int bottomRight2X, int bottomRight2Y)
     {
-        if (topleft1Y >= bottomright2Y || bottomright1Y <= topleft2Y)
+        if (topLeft1Y >= bottomRight2Y || bottomRight1Y <= topLeft2Y)
             return false;
-        if (topleft1X >= bottomright2X || bottomright1X <= topleft2X)
+        if (topLeft1X >= bottomRight2X || bottomRight1X <= topLeft2X)
             return false;
         return true;
     }

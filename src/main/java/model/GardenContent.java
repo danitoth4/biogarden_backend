@@ -17,28 +17,28 @@ public class GardenContent
 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public int id;
+    private int id;
 
-    String name;
+    private String name;
 
     @JsonProperty("plantedCrops")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "gardenContent", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    public List<ConcreteCrop> plantedCropsList = new ArrayList<>();
+    private List<ConcreteCrop> plantedCropsList = new ArrayList<>();
 
     @JsonIgnore
     @Transient
-    public HashMap<Point, String> plantedCrops;
+    private HashMap<Point, String> plantedCrops;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    Garden garden;
+    private Garden garden;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "after")
-    public GardenContent before;
+    private GardenContent before;
 
     @OneToOne(fetch = FetchType.LAZY)
-    public GardenContent after;
+    private GardenContent after;
 
     private String userId;
 
@@ -52,6 +52,76 @@ public class GardenContent
     public GardenContent()
     {}
 
+    //region Getters and Setters
+    public int getId()
+    {
+        return id;
+    }
+
+    public void setId(int id)
+    {
+        this.id = id;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public List<ConcreteCrop> getPlantedCropsList()
+    {
+        return plantedCropsList;
+    }
+
+    public void setPlantedCropsList(List<ConcreteCrop> plantedCropsList)
+    {
+        this.plantedCropsList = plantedCropsList;
+    }
+
+    public HashMap<Point, String> getPlantedCrops()
+    {
+        return plantedCrops;
+    }
+
+    public void setPlantedCrops(HashMap<Point, String> plantedCrops)
+    {
+        this.plantedCrops = plantedCrops;
+    }
+
+    public Garden getGarden()
+    {
+        return garden;
+    }
+
+    public void setGarden(Garden garden)
+    {
+        this.garden = garden;
+    }
+
+    public GardenContent getBefore()
+    {
+        return before;
+    }
+
+    public void setBefore(GardenContent before)
+    {
+        this.before = before;
+    }
+
+    public GardenContent getAfter()
+    {
+        return after;
+    }
+
+    public void setAfter(GardenContent after)
+    {
+        this.after = after;
+    }
 
     public String getUserId()
     {
@@ -62,9 +132,10 @@ public class GardenContent
     {
         this.userId = userId;
     }
+    //endregion
 
 
-    void initialize()
+    private void initialize()
     {
         //first we check if the map is null
         if(plantedCrops == null)

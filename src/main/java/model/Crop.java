@@ -55,6 +55,7 @@ public class Crop {
 
     }
 
+    //region Getters and Setters
     public Integer getId() {
         return id;
     }
@@ -176,4 +177,5 @@ public class Crop {
     {
         this.userId = userId;
     }
+    //endregion
 }

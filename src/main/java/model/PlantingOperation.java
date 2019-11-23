@@ -1,7 +1,5 @@
 package model;
 
-import web.Util.UpdateMethod;
-
 public class PlantingOperation {
 
     private Crop crop;
@@ -16,6 +14,7 @@ public class PlantingOperation {
 
     private int y2;
 
+    //region Getters and Setters
     public Crop getCrop() {
         return crop;
     }
@@ -65,5 +64,5 @@ public class PlantingOperation {
     public void setY2(int y2) {
         this.y2 = y2;
     }
-
+    //endregion
 }

@@ -25,6 +25,7 @@ public class Companion {
 
     private Boolean isPositive;
 
+    //region Getters and Setters
     public String getId()
     {
         return id;
@@ -34,6 +35,7 @@ public class Companion {
     {
         this.id = id;
     }
+
     public Crop getImpacting()
     {
         return impacting;
@@ -61,5 +63,6 @@ public class Companion {
     public void setPositive(Boolean positive) {
         isPositive = positive;
     }
+    //endregion
 
 }

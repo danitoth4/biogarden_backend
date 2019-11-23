@@ -3,18 +3,12 @@ package web.controllers;
 import com.google.common.collect.Lists;
 import model.Companion;
 import model.repositories.CompanionRepository;
-import model.repositories.CropRepository;
 
 import java.util.*;
 
-import model.Crop;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-import web.Util.UpdateMethod;
-import web.errorhandling.CropNotFoundException;
 
 @RestController("/companions")
 public class CompanionController

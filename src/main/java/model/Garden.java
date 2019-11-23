@@ -43,6 +43,7 @@ public class Garden
         this.gardenContents.add(def);
     }
 
+    //region Getters and Setters
     public int getId()
     {
         return id;
@@ -87,5 +88,6 @@ public class Garden
     {
         this.userId = userId;
     }
+    //endregion
 
 }

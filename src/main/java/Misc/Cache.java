@@ -1,7 +1,5 @@
 package Misc;
 
-import model.ConcreteCrop;
-
 import java.awt.*;
 import java.util.HashMap;
 

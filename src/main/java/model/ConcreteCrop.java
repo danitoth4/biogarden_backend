@@ -63,6 +63,7 @@ public class ConcreteCrop
         cropType = type;
     }
 
+    //region Getters and Setters
     public GardenContent getGarden()
     {
         return gardenContent;
@@ -139,7 +140,7 @@ public class ConcreteCrop
         short prefValue = 0;
         for(Recommendation recommendation : recommendations)
         {
-            prefValue += recommendation.value;
+            prefValue += recommendation.getValue();
         }
         return prefValue;
     }
@@ -148,6 +149,7 @@ public class ConcreteCrop
     {
         return cropType;
     }
+    //endregion
 
     void addCompanionRecommendation(ConcreteCrop crop)
     {
@@ -156,11 +158,11 @@ public class ConcreteCrop
         if(companion != null)
         {
             rec = new CompanionRecommendation();
-            rec.value = companion.getPositive() ? 6 : -6;
-            rec.impactedCrop = this;
-            rec.impacterCrop = crop;
-            rec.otherCropId = crop.getCropTypeId();
-            rec.reason = String.format("%s is a %s companion for %s", crop.getCropType().getName(), companion.getPositive() ? "good" : "bad", this.getCropType().getName());
+            rec.setValue(companion.getPositive() ? 6 : -6);
+            rec.setImpactedCrop(this);
+            rec.setImpacterCrop(crop);
+            rec.setOtherCropId(crop.getCropTypeId());
+            rec.setReason(String.format("%s is a %s companion for %s", crop.getCropType().getName(), companion.getPositive() ? "good" : "bad", this.getCropType().getName()));
             rec.setCompanion(companion);
         }
         if(rec != null)
@@ -174,7 +176,7 @@ public class ConcreteCrop
         if(crop == null)
             return;
         //
-        RotationRecommendation rec = (RotationRecommendation)recommendations.stream().filter(r -> r.impacterCrop.id.equals(crop.getId())).findFirst().orElse(null);
+        RotationRecommendation rec = (RotationRecommendation)recommendations.stream().filter(r -> r.getImpacterCrop().getId().equals(crop.getId())).findFirst().orElse(null);
         boolean isNew = false;
         if(rec == null)
         {
@@ -183,32 +185,30 @@ public class ConcreteCrop
         }
         if(this.cropType.getType() == crop.cropType.getType())
         {
-            rec.value += -1;
+            rec.setValue(rec.getValue() - 1);
             if(isNew)
             {
-                rec.impactedCrop = this;
-                rec.impacterCrop = crop;
-                rec.otherContentId = contentId;
-                rec.reason = "";
+                rec.setImpactedCrop(this);
+                rec.setImpacterCrop(crop);
+                rec.setOtherContentId(contentId);
+                rec.setReason("");
             }
         }
         else if( (Crop.cropCylcle.indexOf(this.cropType.getType()) - 1 == Crop.cropCylcle.indexOf(crop.getCropType().getType())) || ( Crop.cropCylcle.indexOf(this.cropType.getType()) == 0 && Crop.cropCylcle.indexOf(crop.getCropType().getType()) == Crop.cropCylcle.size() - 1 ))
         {
-            rec.value += 1;
+            rec.setValue(rec.getValue() + 1);
             if (isNew)
             {
-                rec.impactedCrop = this;
-                rec.impacterCrop = crop;
-                rec.otherContentId = contentId;
-                rec.reason = "";
+                rec.setImpactedCrop(this);
+                rec.setImpacterCrop(crop);
+                rec.setOtherContentId(contentId);
+                rec.setReason("");
             }
         }
-        if(isNew && rec.value != 0)
+        if(isNew && rec.getValue() != 0)
         {
             crop.recommendations.add(rec);
             recommendations.add(rec);
         }
-
     }
-
 }
