@@ -64,12 +64,12 @@ public class ConcreteCrop
     }
 
     //region Getters and Setters
-    public GardenContent getGarden()
+    public GardenContent getGardenContent()
     {
         return gardenContent;
     }
 
-    public void setGarden(GardenContent gardenContent)
+    public void setGardenContent(GardenContent gardenContent)
     {
         this.gardenContent = gardenContent;
     }

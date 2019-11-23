@@ -21,7 +21,6 @@ public class GardenContent
 
     private String name;
 
-    @JsonProperty("plantedCrops")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "gardenContent", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<ConcreteCrop> plantedCropsList = new ArrayList<>();
@@ -235,12 +234,13 @@ public class GardenContent
                 for (int l = 0; l < j; ++l)
                 {
                     ConcreteCrop plantedCrop = new ConcreteCrop(po.getCrop());
-                    plantedCrop.setGarden(this);
+                    plantedCrop.setGardenContent(this);
                     plantedCrop.setStartX(po.getX1() + k * dm);
                     plantedCrop.setStartY(po.getY1() + l * dm);
                     plantedCrop.setEndX(plantedCrop.getStartX() + dm);
                     plantedCrop.setEndY(plantedCrop.getStartY() + dm);
                     plantedCrop.setCropTypeId(plantedCrop.getCropType().getId());
+                    if(k == 0 || k == i - 1 || l == 0 ||l == j - 1)
                     plantedCropsList.stream().parallel().forEach(cc -> {
                         if(Grid.isOverlapping(cc.getStartX(), cc.getStartY(), cc.getEndX(), cc.getEndY(), plantedCrop.getStartX() - dm, plantedCrop.getStartY() - dm, plantedCrop.getEndX() + dm, plantedCrop.getEndY() + dm))
                         {
@@ -319,19 +319,16 @@ public class GardenContent
         return (po.getX1() >= 0 && po.getY1() >= 0 && po.getX2() <= this.garden.getWidth() && po.getY2() <= this.garden.getLength());
     }
 
-    public List<ConcreteCrop> deleteCrops(PlantingOperation po, double zoom)
+    public void deleteCrops(PlantingOperation po, double zoom)
     {
         if (!validatePosition(po))
         {
-            return new LinkedList<>();
+            return;
         }
-        LinkedList<ConcreteCrop> toReturn = new LinkedList<>();
         for(ConcreteCrop cc : plantedCropsList.stream().filter(c -> Grid.isOverlapping(c.getStartX(), c.getStartY(), c.getEndX(), c.getEndY(), po.getX1(), po.getY1(), po.getX2(), po.getY2())).collect(Collectors.toList()))
         {
             plantedCropsList.remove(cc);
-            toReturn.add(cc);
         }
-        return toReturn;
     }
 
 }

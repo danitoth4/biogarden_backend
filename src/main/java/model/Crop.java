@@ -11,30 +11,23 @@ import static model.CropType.*;
 
 @Entity
 @Table( name = "Crops")
-public class Crop {
+public class Crop
+{
 
 
     public static ArrayList<CropType> cropCylcle = new ArrayList<>(Arrays.asList(LEAF, FRUIT, ROOT, LEGUMES));
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("id")
     private Integer id;
 
     private String name;
 
-    private String binomialName;
-
     @Length(max = 1000)
-    private String Description;
-
-    private String sowingMethod;
+    private String description;
 
     private int diameter;
-
-    private Float rowSpacing;
-
-    private Float height;
 
     private String imageUrl;
 
@@ -55,6 +48,15 @@ public class Crop {
 
     }
 
+    public Crop(Crop other)
+    {
+        this.name = other.name;
+        this.description = other.description;
+        this.diameter = other.diameter;
+        this.imageUrl = other.imageUrl;
+        this.type = other.type;
+    }
+
     //region Getters and Setters
     public Integer getId() {
         return id;
@@ -72,29 +74,15 @@ public class Crop {
         this.name = name;
     }
 
-    public String getBinomialName() {
-        return binomialName;
-    }
-
-    public void setBinomialName(String binomialName) {
-        this.binomialName = binomialName;
-    }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        description = description;
     }
 
-    public String getSowingMethod() {
-        return sowingMethod;
-    }
-
-    public void setSowingMethod(String sowingMethod) {
-        this.sowingMethod = sowingMethod;
-    }
 
     public int getDiameter() {
         return diameter;
@@ -102,22 +90,6 @@ public class Crop {
 
     public void setDiameter(int diameter) {
         this.diameter = diameter;
-    }
-
-    public Float getRowSpacing() {
-        return rowSpacing;
-    }
-
-    public void setRowSpacing(Float rowSpacing) {
-        this.rowSpacing = rowSpacing;
-    }
-
-    public Float getHeight() {
-        return height;
-    }
-
-    public void setHeight(Float height) {
-        this.height = height;
     }
 
     public String getImageUrl() {

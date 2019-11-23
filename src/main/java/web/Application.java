@@ -34,6 +34,7 @@ public class Application {
             c.setName("Tomato");
             c.setImageUrl("https://ui-ex.com/images/tomato-vector-svg-3.png");
             c.setDiameter(2);
+            c.setUserId("admin");
             for(Crop crop : repository.findAll())
             {
                 Companion comp = new Companion();

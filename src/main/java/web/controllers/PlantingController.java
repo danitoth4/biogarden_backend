@@ -70,10 +70,8 @@ public class PlantingController {
             Cache.tryStoreGardeninCache(id, gardenContent.plantedCrops);
             return new ResponseEntity<>(gardenContent.getPlantedCropsList(zoomValue, x1, y1, x2, y2), HttpStatus.OK);
         }*/
-        for(ConcreteCrop cc : gardenContent.deleteCrops(deletedPlants, zoomValue))
-        {
-            concreteCropRepository.deleteById(cc.getId());
-        }
+        gardenContent.deleteCrops(deletedPlants, zoomValue);
+        gardenContentRepository.save(gardenContent);
         return new ResponseEntity<>(gardenContent.getPlantedCropsList(zoomValue, x1, y1, x2, y2), HttpStatus.OK);
     }
 }

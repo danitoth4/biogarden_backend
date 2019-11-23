@@ -1,7 +1,9 @@
 package web.controllers;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import model.repositories.CropRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,12 +11,19 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import model.*;
 import web.errorhandling.CropNotFoundException;
+
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class CropController {
 
     private final CropRepository repository;
+
+    @Autowired
+    private EntityManager em;
 
     public CropController(CropRepository cropRepository) {
         repository = cropRepository;
@@ -24,8 +33,35 @@ public class CropController {
     @RequestMapping("/crop")
     public List<Crop> getCrops(@AuthenticationPrincipal Jwt jwt)
     {
-        Iterable<Crop> crops = repository.findAll();//ByUserId(jwt.getSubject());
+        List<Crop> crops = repository.findAllByUserId(jwt.getSubject());
+        if(crops.isEmpty())
+            return createCropsFromTemplate(jwt.getSubject());
         return Lists.newArrayList(crops);
+    }
+
+    private List<Crop> createCropsFromTemplate(String subject)
+    {
+        List<Crop> defaultCrops = repository.findAllByUserId("admin");
+        List<Crop> newCrops = new ArrayList<>();
+        for (Crop c : defaultCrops)
+        {
+            Crop newCrop = new Crop(c);
+            newCrop.setUserId(subject);
+            newCrops.add(newCrop);
+        }
+        Map<String, Crop> cropsByName = Maps.uniqueIndex(newCrops, Crop::getName);
+        /*for(Crop c : defaultCrops)
+        {
+            for(Companion comp : c.getImpacts())
+            {
+                Companion newCompanion = new Companion();
+                newCompanion.setPositive(comp.getPositive());
+                cropsByName.get(c.getName()).addToImpacts(newCompanion);
+                cropsByName.get(comp.getImpacted().getName()).addToImpactedBy(newCompanion);
+            }
+        }*/
+        defaultCrops.forEach(c -> em.detach(c));
+        return repository.saveAll(newCrops);
     }
 
     @RequestMapping("/crop/{id}")
