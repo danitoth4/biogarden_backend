@@ -6,7 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 @Entity
-public class Recommendation
+public abstract class Recommendation
 {
     @Id
     @GeneratedValue(generator = "uuid")

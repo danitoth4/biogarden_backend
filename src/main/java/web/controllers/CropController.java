@@ -50,16 +50,6 @@ public class CropController {
             newCrops.add(newCrop);
         }
         Map<String, Crop> cropsByName = Maps.uniqueIndex(newCrops, Crop::getName);
-        /*for(Crop c : defaultCrops)
-        {
-            for(Companion comp : c.getImpacts())
-            {
-                Companion newCompanion = new Companion();
-                newCompanion.setPositive(comp.getPositive());
-                cropsByName.get(c.getName()).addToImpacts(newCompanion);
-                cropsByName.get(comp.getImpacted().getName()).addToImpactedBy(newCompanion);
-            }
-        }*/
         defaultCrops.forEach(c -> em.detach(c));
         return repository.saveAll(newCrops);
     }

@@ -161,7 +161,6 @@ public class ConcreteCrop
             rec.setValue(companion.getPositive() ? 6 : -6);
             rec.setImpactedCrop(this);
             rec.setImpacterCrop(crop);
-            rec.setOtherCropId(crop.getCropTypeId());
             rec.setReason(String.format("%s is a %s companion for %s", crop.getCropType().getName(), companion.getPositive() ? "good" : "bad", this.getCropType().getName()));
             rec.setCompanion(companion);
         }
@@ -190,7 +189,7 @@ public class ConcreteCrop
             {
                 rec.setImpactedCrop(this);
                 rec.setImpacterCrop(crop);
-                rec.setOtherContentId(contentId);
+                rec.setGardenContentId(contentId);
                 rec.setReason("");
             }
         }
@@ -201,7 +200,7 @@ public class ConcreteCrop
             {
                 rec.setImpactedCrop(this);
                 rec.setImpacterCrop(crop);
-                rec.setOtherContentId(contentId);
+                rec.setGardenContentId(contentId);
                 rec.setReason("");
             }
         }
