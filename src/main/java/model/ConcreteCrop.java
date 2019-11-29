@@ -189,7 +189,6 @@ public class ConcreteCrop
             {
                 rec.setImpactedCrop(this);
                 rec.setImpacterCrop(crop);
-                rec.setGardenContentId(contentId);
                 rec.setReason("");
             }
         }
@@ -200,7 +199,6 @@ public class ConcreteCrop
             {
                 rec.setImpactedCrop(this);
                 rec.setImpacterCrop(crop);
-                rec.setGardenContentId(contentId);
                 rec.setReason("");
             }
         }

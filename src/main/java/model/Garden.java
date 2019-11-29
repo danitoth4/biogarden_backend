@@ -1,6 +1,9 @@
 package model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import java.util.*;
 
 
@@ -12,10 +15,15 @@ public class Garden
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    @NotBlank(message = "Name is mandatory")
     private String name;
 
+    @Min(value = 1, message = "Garden length must be a positive value")
+    @Max(value = 2000, message = "This version only supports gardens that are not longer than 100m")
     private Integer length;
 
+    @Min(value = 1, message = "Garden width must be a positive value")
+    @Max(value = 2000, message = "This version only supports gardens that are not wider than 100m")
     private Integer width;
 
     private String userId;
@@ -31,15 +39,16 @@ public class Garden
     }
 
     /**
-     * @param l
-     * @param w
+     * @param l Length of the garden
+     * @param w Width of the garden
+     * @param userId Id of the user who owns the garden
      */
     public Garden(int l, int w, String userId)
     {
         length = l;
         width = w;
         this.userId = userId;
-        GardenContent def = new GardenContent(this, "Default", this.userId);
+        GardenContent def = new GardenContent(this, "Default");
         this.gardenContents.add(def);
     }
 

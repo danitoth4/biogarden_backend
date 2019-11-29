@@ -23,7 +23,7 @@ public class Companion {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "companion")
     private List<CompanionRecommendation> recommendations = new ArrayList<>();
 
-    private Boolean isPositive;
+    private Boolean positive;
 
     //region Getters and Setters
     public String getId()
@@ -57,11 +57,11 @@ public class Companion {
     }
 
     public Boolean getPositive() {
-        return isPositive;
+        return positive;
     }
 
     public void setPositive(Boolean positive) {
-        isPositive = positive;
+        this.positive = positive;
     }
     //endregion
 

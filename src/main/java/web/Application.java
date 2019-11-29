@@ -2,6 +2,7 @@ package web;
 
 import model.Companion;
 import model.Crop;
+import model.CropType;
 import model.repositories.CropRepository;
 import org.slf4j.*;
 import org.springframework.boot.*;
@@ -35,6 +36,7 @@ public class Application {
             c.setImageUrl("https://ui-ex.com/images/tomato-vector-svg-3.png");
             c.setDiameter(2);
             c.setUserId("admin");
+            c.setType(CropType.FRUIT);
             for(Crop crop : repository.findAll())
             {
                 Companion comp = new Companion();

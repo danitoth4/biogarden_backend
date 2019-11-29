@@ -3,8 +3,12 @@ package model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import java.util.*;
 
 import static model.CropType.*;
@@ -14,7 +18,6 @@ import static model.CropType.*;
 public class Crop
 {
 
-
     public static ArrayList<CropType> cropCylcle = new ArrayList<>(Arrays.asList(LEAF, FRUIT, ROOT, LEGUMES));
 
     @Id
@@ -22,17 +25,21 @@ public class Crop
     @JsonProperty("id")
     private Integer id;
 
+    @NotBlank(message = "Name is mandatory")
     private String name;
 
     @Length(max = 1000)
     private String description;
 
+    @Min(value = 1, message = "All crops must have at least 5cm diameter")
     private int diameter;
 
+    @URL
     private String imageUrl;
 
     private CropType type;
 
+    @NotBlank
     private String userId;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "impacting")
@@ -43,10 +50,12 @@ public class Crop
     @JsonIgnore
     private Set<Companion> impactedBy = new HashSet<>();
 
-    public Crop()
-    {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cropType")
+    @JsonIgnore
+    private List<ConcreteCrop> concreteCrops = new LinkedList<>();
 
-    }
+    public Crop()
+    { }
 
     public Crop(Crop other)
     {

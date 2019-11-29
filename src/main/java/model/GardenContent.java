@@ -3,8 +3,6 @@ package model;
 import Misc.Cache;
 import Misc.Grid;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import model.repositories.ConcreteCropRepository;
 
 import javax.persistence.*;
 import java.awt.*;
@@ -41,11 +39,11 @@ public class GardenContent
 
     private String userId;
 
-    public GardenContent(Garden garden, String name, String userId)
+    public GardenContent(Garden garden, String name)
     {
         this.garden = garden;
         this.name = name;
-        this.userId = userId;
+        this.userId = garden.getUserId();
     }
 
     public GardenContent()
