@@ -1,7 +1,5 @@
 package model;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +8,8 @@ import java.util.List;
 public class Companion {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
     @ManyToOne
     private Crop impacting;
@@ -26,12 +23,12 @@ public class Companion {
     private Boolean positive;
 
     //region Getters and Setters
-    public String getId()
+    public int getId()
     {
         return id;
     }
 
-    public void setId(String id)
+    public void setId(int id)
     {
         this.id = id;
     }

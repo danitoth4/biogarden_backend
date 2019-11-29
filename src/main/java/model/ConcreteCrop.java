@@ -1,11 +1,8 @@
 package model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +12,8 @@ import java.util.List;
 public class ConcreteCrop
 {
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
@@ -75,12 +71,12 @@ public class ConcreteCrop
     }
 
 
-    public String getId()
+    public int getId()
     {
         return id;
     }
 
-    public void  setId(String id)
+    public void  setId(int id)
     {
         this.id = id;
     }
@@ -175,7 +171,7 @@ public class ConcreteCrop
         if(crop == null)
             return;
         //
-        RotationRecommendation rec = (RotationRecommendation)recommendations.stream().filter(r -> r.getImpacterCrop().getId().equals(crop.getId())).findFirst().orElse(null);
+        RotationRecommendation rec = (RotationRecommendation)recommendations.stream().filter(r -> r.getImpacterCrop().getId() == crop.getId()).findFirst().orElse(null);
         boolean isNew = false;
         if(rec == null)
         {

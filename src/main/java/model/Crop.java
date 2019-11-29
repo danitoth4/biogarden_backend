@@ -22,8 +22,7 @@ public class Crop
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty("id")
-    private Integer id;
+    private int id;
 
     @NotBlank(message = "Name is mandatory")
     private String name;

@@ -9,9 +9,8 @@ import javax.persistence.*;
 public abstract class Recommendation
 {
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
     private String reason;
 
@@ -30,12 +29,12 @@ public abstract class Recommendation
     }
 
     //region Getters and Setters
-    public String getId()
+    public int getId()
     {
         return id;
     }
 
-    public void setId(String id)
+    public void setId(int id)
     {
         this.id = id;
     }

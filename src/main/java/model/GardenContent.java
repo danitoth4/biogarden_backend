@@ -25,7 +25,7 @@ public class GardenContent
 
     @JsonIgnore
     @Transient
-    private HashMap<Point, String> plantedCrops;
+    private HashMap<Point, Integer> plantedCrops;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
@@ -80,12 +80,12 @@ public class GardenContent
         this.plantedCropsList = plantedCropsList;
     }
 
-    public HashMap<Point, String> getPlantedCrops()
+    public HashMap<Point, Integer> getPlantedCrops()
     {
         return plantedCrops;
     }
 
-    public void setPlantedCrops(HashMap<Point, String> plantedCrops)
+    public void setPlantedCrops(HashMap<Point, Integer> plantedCrops)
     {
         this.plantedCrops = plantedCrops;
     }
@@ -192,7 +192,7 @@ public class GardenContent
                 cc.setEndX(cc.getStartX() + 1);
             if (cc.getStartY() == cc.getEndY())
                 cc.setEndY(cc.getEndY() + 1);
-            cc.setId(null);
+            cc.setId(0);
         });
         return zoomedList.stream().distinct().collect(Collectors.toList());
     }
@@ -279,12 +279,12 @@ public class GardenContent
             for(int j = startY; j <= endY; ++i)
             {
                 Point p = new Point(i, j);
-                String onBeforeId = last.plantedCrops.get(p);
-                String onCurrentlyId = current.plantedCrops.get(p);
+                Integer onBeforeId = last.plantedCrops.get(p);
+                Integer onCurrentlyId = current.plantedCrops.get(p);
                 if(onBeforeId != null && onCurrentlyId != null)
                 {
-                    ConcreteCrop onCurrently = current.plantedCropsList.stream().filter(cc -> cc.getId().equals(onCurrentlyId)).findFirst().orElse(null);
-                    ConcreteCrop onBefore = last.plantedCropsList.stream().filter(cc -> cc.getId().equals(onBeforeId)).findFirst().orElse(null);
+                    ConcreteCrop onCurrently = current.plantedCropsList.stream().filter(cc -> cc.getId() == onCurrentlyId).findFirst().orElse(null);
+                    ConcreteCrop onBefore = last.plantedCropsList.stream().filter(cc -> cc.getId() == onBeforeId).findFirst().orElse(null);
                     if(onCurrently != null)
                     {
                         onCurrently.addRotationRecommendation(onBefore, last.id);

@@ -5,16 +5,16 @@ import java.util.HashMap;
 
 public class Cache
 {
-    private static HashMap<Integer, HashMap<Point, String>> gardenCache;
+    private static HashMap<Integer, HashMap<Point, Integer>> gardenCache;
 
-    public static HashMap<Point, String> getCachedInstance(int id)
+    public static HashMap<Point, Integer> getCachedInstance(int id)
     {
         if(gardenCache == null)
             gardenCache = new HashMap<>();
         return gardenCache.get(id);
     }
 
-    public static boolean tryStoreGardeninCache(int id, HashMap<Point, String> map)
+    public static boolean tryStoreGardeninCache(int id, HashMap<Point, Integer> map)
     {
         if(hasFreeSpace() && id != 0)
         {
