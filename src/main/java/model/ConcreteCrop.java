@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -146,6 +147,26 @@ public class ConcreteCrop
         return cropType;
     }
     //endregion
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ConcreteCrop that = (ConcreteCrop) o;
+        return id == that.id &&
+                startX == that.startX &&
+                startY == that.startY &&
+                endX == that.endX &&
+                endY == that.endY &&
+                preferenceValue.equals(that.preferenceValue) &&
+                cropTypeId.equals(that.cropTypeId) &&
+                cropType.equals(that.cropType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, preferenceValue, startX, startY, endX, endY, cropTypeId, cropType);
+    }
 
     void addCompanionRecommendation(ConcreteCrop crop)
     {

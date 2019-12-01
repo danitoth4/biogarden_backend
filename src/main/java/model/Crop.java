@@ -88,7 +88,7 @@ public class Crop
     }
 
     public void setDescription(String description) {
-        description = description;
+        this.description = description;
     }
 
 
@@ -158,4 +158,24 @@ public class Crop
         this.userId = userId;
     }
     //endregion
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Crop crop = (Crop) o;
+        return id == crop.id &&
+                diameter == crop.diameter &&
+                name.equals(crop.name) &&
+                Objects.equals(description, crop.description) &&
+                imageUrl.equals(crop.imageUrl) &&
+                type == crop.type &&
+                userId.equals(crop.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, diameter, imageUrl, type, userId);
+    }
 }
