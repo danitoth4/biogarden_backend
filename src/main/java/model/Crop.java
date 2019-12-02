@@ -14,7 +14,7 @@ import java.util.*;
 import static model.CropType.*;
 
 @Entity
-@Table( name = "Crops")
+@Table( name = "Crops", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "user_id"})})
 public class Crop
 {
 
@@ -39,6 +39,7 @@ public class Crop
     private CropType type;
 
     @NotBlank
+    @Column(name = "user_id")
     private String userId;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "impacting")
