@@ -41,15 +41,15 @@ public class Crop
     @NotBlank
     private String userId;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "impacting")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "impacting")
     @JsonIgnore
     private Set<Companion> impacts = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "impacted")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "impacted")
     @JsonIgnore
     private Set<Companion> impactedBy = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cropType")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "cropType")
     @JsonIgnore
     private List<ConcreteCrop> concreteCrops = new LinkedList<>();
 
@@ -171,7 +171,7 @@ public class Crop
                 Objects.equals(description, crop.description) &&
                 imageUrl.equals(crop.imageUrl) &&
                 type == crop.type &&
-                userId.equals(crop.userId);
+                Objects.equals(userId, crop.userId);
     }
 
     @Override

@@ -158,7 +158,7 @@ public class ConcreteCrop
                 startY == that.startY &&
                 endX == that.endX &&
                 endY == that.endY &&
-                preferenceValue.equals(that.preferenceValue) &&
+                this.getPreferenceValue().equals(that.getPreferenceValue()) &&
                 cropTypeId.equals(that.cropTypeId) &&
                 cropType.equals(that.cropType);
     }

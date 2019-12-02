@@ -51,7 +51,8 @@ public class CropController {
         }
         Map<String, Crop> cropsByName = Maps.uniqueIndex(newCrops, Crop::getName);
         defaultCrops.forEach(c -> em.detach(c));
-        return repository.saveAll(newCrops);
+        repository.saveAll(newCrops);
+        return newCrops;
     }
 
     @RequestMapping("/crop/{id}")
@@ -66,17 +67,16 @@ public class CropController {
         Crop updatedCrop = repository.findByIdAndUserId(id, jwt.getSubject()).orElse(null);
         if(updatedCrop == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        updatedCrop = crop;
-        updatedCrop.setId(id);
-        updatedCrop.setUserId(jwt.getSubject());
+        updatedCrop.setImageUrl(crop.getImageUrl());
+        updatedCrop.setDescription(crop.getDescription());
         return new ResponseEntity<>(repository.save(updatedCrop), HttpStatus.OK);
     }
 
     @PostMapping("/crop")
-    public Crop postCrop(@RequestBody Crop crop, @AuthenticationPrincipal Jwt jwt)
+    public ResponseEntity<Crop> postCrop(@RequestBody Crop crop, @AuthenticationPrincipal Jwt jwt)
     {
         crop.setUserId(jwt.getSubject());
-        return repository.save(crop);
+        return new ResponseEntity<>(repository.save(crop), HttpStatus.CREATED);
     }
 
 
