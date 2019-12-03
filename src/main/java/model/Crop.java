@@ -25,6 +25,7 @@ public class Crop
     private int id;
 
     @NotBlank(message = "Name is mandatory")
+    @Column(length = 30)
     private String name;
 
     @Length(max = 1000)
@@ -39,7 +40,7 @@ public class Crop
     private CropType type;
 
     @NotBlank
-    @Column(name = "user_id")
+    @Column(name = "user_id",  length = 30)
     private String userId;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "impacting")
