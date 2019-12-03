@@ -28,13 +28,6 @@ public class CompanionController
         this.repository = companionRepository;
         this.cropRepository = cropRepository;
     }
-    
-    @GetMapping("/companions")
-    public List<Companion> getCompanions(@AuthenticationPrincipal Jwt jwt)
-    {
-        Iterable<Companion> companions = repository.findAll();
-        return Lists.newArrayList(companions);
-    }
 
     @GetMapping("/companions/{id}")
     public ResponseEntity<Set<Companion>> getCompanionsForCrop(@PathVariable("id") int id, @AuthenticationPrincipal Jwt jwt)
@@ -46,7 +39,8 @@ public class CompanionController
     @PostMapping("/companions")
     public ResponseEntity<Companion> PostCompanion(@RequestBody Companion newCompanion, @AuthenticationPrincipal Jwt jwt)
     {
-        return new ResponseEntity<>(repository.save(newCompanion), HttpStatus.CREATED);
+        Companion c = repository.save(newCompanion);
+        return new ResponseEntity<>(c, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/companions/{id}")

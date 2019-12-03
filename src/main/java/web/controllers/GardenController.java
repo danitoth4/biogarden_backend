@@ -46,17 +46,15 @@ public class GardenController
         if(jwt.getSubject().equals(g.getUserId()))
             return new ResponseEntity<>(repository.save(g), HttpStatus.OK);
         else
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/garden")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Garden postGarden(@RequestBody Garden g, @AuthenticationPrincipal Jwt jwt)
+    public ResponseEntity<Garden> postGarden(@RequestBody Garden g, @AuthenticationPrincipal Jwt jwt)
     {
         Garden garden = new Garden(g.getLength(), g.getWidth(), jwt.getSubject());
         garden.setName(g.getName());
-        repository.save(garden);
-        return garden;
+        return new ResponseEntity<>(repository.save(garden), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/garden/{id}")
@@ -66,11 +64,11 @@ public class GardenController
         if(jwt.getSubject().equals(g.getUserId()))
         {
             repository.deleteById(id);
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
         else
         {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
 }

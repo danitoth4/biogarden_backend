@@ -170,7 +170,7 @@ public class Crop
                 diameter == crop.diameter &&
                 name.equals(crop.name) &&
                 Objects.equals(description, crop.description) &&
-                imageUrl.equals(crop.imageUrl) &&
+                Objects.equals(imageUrl, crop.imageUrl) &&
                 type == crop.type &&
                 Objects.equals(userId, crop.userId);
     }

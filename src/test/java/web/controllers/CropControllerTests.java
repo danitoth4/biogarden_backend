@@ -35,7 +35,6 @@ import static org.mockito.Mockito.when;
 @AutoConfigureMockMvc
 public class CropControllerTests
 {
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -51,7 +50,6 @@ public class CropControllerTests
     {
         adminToken = Helper.getAccessToken("admin", "admin", "client", "secret");
         demoToken = Helper.getAccessToken("demo", "demo", "client", "secret");
-        CropRepository cropRepositoryMock = mock(CropRepository.class);
     }
 
     @Before
@@ -85,27 +83,38 @@ public class CropControllerTests
     }
 
     @Test
-    public void test_method() throws Exception
+    public void test_get_all_crops() throws Exception
     {
-        mockMvc.perform(get("/crop").header("Authorization", "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andExpect(content().json("[{\"id\":1,\"name\":\"Tomato\",\"description\":null,\"diameter\":2,\"imageUrl\":null,\"type\":\"FRUIT\",\"userId\":\"admin\"},{\"id\":2,\"name\":\"Carrot\",\"description\":null,\"diameter\":1,\"imageUrl\":null,\"type\":\"ROOT\",\"userId\":\"admin\"}]"));
+        mockMvc.perform(get("/crop").header("Authorization", "Bearer " + adminToken))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json("[{\"id\":1,\"name\":\"Tomato\",\"description\":null,\"diameter\":2,\"imageUrl\":null,\"type\":\"FRUIT\",\"userId\":\"admin\"},{\"id\":2,\"name\":\"Carrot\",\"description\":null,\"diameter\":1,\"imageUrl\":null,\"type\":\"ROOT\",\"userId\":\"admin\"}]"));
     }
 
     @Test
     public void test_create_template() throws Exception
     {
-        mockMvc.perform(get("/crop").header("Authorization", "Bearer " + demoToken)).andDo(print()).andExpect(status().isOk()).andExpect(content().json("[{\"id\":0,\"name\":\"Tomato\",\"description\":null,\"diameter\":2,\"imageUrl\":null,\"type\":\"FRUIT\",\"userId\":\"demo\"},{\"id\":0,\"name\":\"Carrot\",\"description\":null,\"diameter\":1,\"imageUrl\":null,\"type\":\"ROOT\",\"userId\":\"demo\"}]"));
+        mockMvc.perform(get("/crop").header("Authorization", "Bearer " + demoToken))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json("[{\"id\":0,\"name\":\"Tomato\",\"description\":null,\"diameter\":2,\"imageUrl\":null,\"type\":\"FRUIT\",\"userId\":\"demo\"},{\"id\":0,\"name\":\"Carrot\",\"description\":null,\"diameter\":1,\"imageUrl\":null,\"type\":\"ROOT\",\"userId\":\"demo\"}]"));
     }
 
     @Test
     public void test_get_single_crop() throws Exception
     {
-        mockMvc.perform(get("/crop/1").header("Authorization", "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andExpect(content().json("{\"id\":1,\"name\":\"Tomato\",\"description\":null,\"diameter\":2,\"imageUrl\":null,\"type\":\"FRUIT\",\"userId\":\"admin\"}"));
+        mockMvc.perform(get("/crop/1").header("Authorization", "Bearer " + adminToken))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json("{\"id\":1,\"name\":\"Tomato\",\"description\":null,\"diameter\":2,\"imageUrl\":null,\"type\":\"FRUIT\",\"userId\":\"admin\"}"));
     }
 
     @Test
     public void test_get_single_non_existing_crop() throws Exception
     {
-        mockMvc.perform(get("/crop/10").header("Authorization", "Bearer " + adminToken)).andDo(print()).andExpect(status().isNotFound());
+        mockMvc.perform(get("/crop/10").header("Authorization", "Bearer " + adminToken))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -126,7 +135,11 @@ public class CropControllerTests
 
         when(cropRepositoryMock.save(updated)).thenReturn(updated);
 
-        mockMvc.perform(put("/crop/1").header("Authorization", "Bearer " + adminToken).header("Content-Type", "application/json").content(body)).andDo(print()).andExpect(status().isOk()).andExpect(content().json(mapper.writeValueAsString(updated)));
+        mockMvc.perform(put("/crop/1")
+                .header("Authorization", "Bearer " + adminToken).header("Content-Type", "application/json").content(body))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(updated)));
     }
 
     @Test
@@ -146,14 +159,20 @@ public class CropControllerTests
 
         when(cropRepositoryMock.save(newCrop)).thenReturn(newCrop);
 
-        mockMvc.perform(post("/crop").header("Authorization", "Bearer " + demoToken).header("Content-Type", "application/json").content(body)).andDo(print()).andExpect(status().isCreated()).andExpect(content().json(mapper.writeValueAsString(newCrop)));
+        mockMvc.perform(post("/crop")
+                .header("Authorization", "Bearer " + demoToken).header("Content-Type", "application/json").content(body))
+                .andDo(print())
+                .andExpect(status().isCreated()).andExpect(content().json(mapper.writeValueAsString(newCrop)));
     }
 
     @Test
     public void test_delete_crop() throws Exception
     {
-        mockMvc.perform(delete("/crop/1").header("Authorization", "Bearer " + demoToken)).andExpect(status().isNotFound());
-        mockMvc.perform(delete("/crop/1").header("Authorization", "Bearer " + adminToken)).andExpect(status().isNoContent());
+        mockMvc.perform(delete("/crop/1").header("Authorization", "Bearer " + demoToken))
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(delete("/crop/1").header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isNoContent());
     }
 
 }

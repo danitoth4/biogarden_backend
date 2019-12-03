@@ -20,12 +20,13 @@ import java.util.Map;
 @RestController
 public class CropController {
 
-    private final CropRepository repository;
-
     @Autowired
     private EntityManager em;
 
-    public CropController(CropRepository cropRepository) {
+    private final CropRepository repository;
+
+    public CropController(CropRepository cropRepository)
+    {
         repository = cropRepository;
     }
 

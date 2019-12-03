@@ -53,7 +53,7 @@ public class PlantingController {
         {
             gardenContentRepository.save(gardenContent);
             Cache.tryStoreGardeninCache(id, gardenContent.getPlantedCrops());
-            return new ResponseEntity<>(/*gardenContent.getPlantedCropsList(zoomValue, x1, y1, x2, y2), */HttpStatus.CREATED);
+            return new ResponseEntity<>(gardenContent.getPlantedCropsList(zoomValue, x1, y1, x2, y2), HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

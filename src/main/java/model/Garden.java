@@ -58,6 +58,8 @@ public class Garden
         return id;
     }
 
+    public void setId(int id) { this.id = id; }
+
     public String getName()
     {
         return name;
@@ -99,4 +101,23 @@ public class Garden
     }
     //endregion
 
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Garden garden = (Garden) o;
+        return id == garden.id &&
+                Objects.equals(name, garden.name) &&
+                length.equals(garden.length) &&
+                width.equals(garden.width) &&
+                userId.equals(garden.userId);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(id, name, length, width, userId);
+    }
 }

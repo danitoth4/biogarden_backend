@@ -295,8 +295,7 @@ public class GardenContent
     }
 
     /**
-     * organizes the the coordinates in the right order and validates if they are on the grid
-     *
+     * organizes the the coordinates in the right order and validates that they are on the grid
      * @param po The planting operation
      * @return true if the operation is valid
      */

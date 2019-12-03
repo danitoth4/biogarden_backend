@@ -3,6 +3,7 @@ package model;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Companion {
@@ -62,4 +63,22 @@ public class Companion {
     }
     //endregion
 
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Companion companion = (Companion) o;
+        return id == companion.id &&
+                Objects.equals(impacting, companion.impacting) &&
+                Objects.equals(impacted, companion.impacted) &&
+                Objects.equals(positive, companion.positive);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(id, impacting, impacted, positive);
+    }
 }

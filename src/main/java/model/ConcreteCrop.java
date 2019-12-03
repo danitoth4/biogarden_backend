@@ -40,10 +40,10 @@ public class ConcreteCrop
     private Crop cropType;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "impactedCrop", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<Recommendation> recommendations = new ArrayList<>();
+    private List<Recommendation> recommendations = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "impacterCrop", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<Recommendation> impactedRecommendations = new ArrayList<>();
+    private List<Recommendation> impactedRecommendations = new ArrayList<>();
 
 
     public ConcreteCrop()
@@ -145,6 +145,11 @@ public class ConcreteCrop
     public Crop getCropType()
     {
         return cropType;
+    }
+
+    public void setCropType(Crop cropType)
+    {
+        this.cropType = cropType;
     }
     //endregion
 
