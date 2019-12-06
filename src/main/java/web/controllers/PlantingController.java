@@ -49,7 +49,7 @@ public class PlantingController {
         GardenContent gardenContent = gardenContentRepository.findByIdAndUserId(id, jwt.getSubject()).orElseThrow(() -> new ContentNotFoundException(id));
         float zoomValue = Float.parseFloat(zoom);
         int x1 = Integer.parseInt(startX), y1 = Integer.parseInt(startY), x2 = Integer.parseInt(endX), y2 = Integer.parseInt(endY);
-        if(gardenContent.plantCrop(newPlant, zoomValue))
+        if(gardenContent.plantCrop(newPlant))
         {
             gardenContentRepository.save(gardenContent);
             Cache.tryStoreGardeninCache(id, gardenContent.getPlantedCrops());

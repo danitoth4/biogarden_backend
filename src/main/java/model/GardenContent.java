@@ -139,28 +139,13 @@ public class GardenContent
         {
             //try to get the value from the cache so it doesn't have to be created
             plantedCrops = Cache.getCachedInstance(this.id);
-
             if(plantedCrops == null)
             {
-
                 //setting up the map manually. if the list loaded from the db already contains elements then fill them
-
                 plantedCrops = new HashMap<>();
-
                 for(ConcreteCrop cc : plantedCropsList)
                 {
                     addCropToMap(cc);
-                }
-                for (int i = 0; i < garden.getWidth(); ++i)
-                {
-                    for (int j = 0; j < garden.getLength(); ++j)
-                    {
-                        Point p = new Point(i, j);
-                        if(!plantedCrops.containsKey(p))
-                        {
-                            plantedCrops.put(p, null);
-                        }
-                    }
                 }
             }
         }
@@ -177,7 +162,6 @@ public class GardenContent
                 plantedCrops.put(new Point(i, j), cc.getId());
             }
         }
-
     }
 
     public Collection<ConcreteCrop> getPlantedCropsList(float zoom, int x1, int y1, int x2, int y2)
@@ -197,7 +181,7 @@ public class GardenContent
         return zoomedList.stream().distinct().collect(Collectors.toList());
     }
 
-    public boolean plantCrop(PlantingOperation po, double zoom)
+    public boolean plantCrop(PlantingOperation po)
     {
         initialize();
         if (!validatePosition(po))
@@ -209,7 +193,6 @@ public class GardenContent
             if (cc != null && Grid.isOverlapping(cc.getStartX(), cc.getStartY(), cc.getEndX(), cc.getEndY(), po.getX1(), po.getY1(), po.getX2(), po.getY2()))
                 return false;
         }
-
         try
         {
             if (po.getCrop() == null)
@@ -327,5 +310,4 @@ public class GardenContent
             plantedCropsList.remove(cc);
         }
     }
-
 }

@@ -19,5 +19,4 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter
                 .oauth2ResourceServer()
                 .jwt();
     }
-
 }

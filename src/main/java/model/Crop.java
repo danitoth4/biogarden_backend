@@ -32,6 +32,7 @@ public class Crop
     private String description;
 
     @Min(value = 1, message = "All crops must have at least 5cm diameter")
+    @Max(value = 40, message = "No crop can be larger than 2m")
     private int diameter;
 
     @URL

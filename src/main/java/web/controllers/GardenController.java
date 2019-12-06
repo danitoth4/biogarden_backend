@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import model.*;
 import org.springframework.web.client.HttpClientErrorException;
 import web.errorhandling.GardenNotFoundException;
+
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -31,44 +34,39 @@ public class GardenController
     @GetMapping("/garden/{id}")
     public ResponseEntity<Garden> getGarden(@PathVariable("id") int id, @AuthenticationPrincipal Jwt jwt)
     {
-        Garden g =  repository.findById(id).orElseThrow(() -> new GardenNotFoundException(id));
-        if(g.getUserId().equals(jwt.getSubject()))
-            return new ResponseEntity<>(g, HttpStatus.OK);
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Garden g =  repository.findByIdAndUserId(id, jwt.getSubject()).orElseThrow(() -> new GardenNotFoundException(id));
+        return new ResponseEntity<>(g, HttpStatus.OK);
     }
 
     @PutMapping("/garden/{id}")
-    public ResponseEntity<Garden> putGarden(@PathVariable("id") int id, @RequestBody Garden garden, @AuthenticationPrincipal Jwt jwt)
+    public ResponseEntity<Garden> putGarden(@PathVariable("id") int id, @Valid @RequestBody Garden garden, @AuthenticationPrincipal Jwt jwt)
     {
-        Garden g = repository.findById(id).orElseThrow(() -> new GardenNotFoundException(id));
+        Garden g = repository.findByIdAndUserId(id, jwt.getSubject()).orElseThrow(() -> new GardenNotFoundException(id));
         g.setName(garden.getName());
-        if(jwt.getSubject().equals(g.getUserId()))
+        try
+        {
             return new ResponseEntity<>(repository.save(g), HttpStatus.OK);
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (ConstraintViolationException ex)
+        {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/garden")
-    public ResponseEntity<Garden> postGarden(@RequestBody Garden g, @AuthenticationPrincipal Jwt jwt)
+    public ResponseEntity<Garden> postGarden(@Valid @RequestBody Garden g, @AuthenticationPrincipal Jwt jwt)
     {
         Garden garden = new Garden(g.getLength(), g.getWidth(), jwt.getSubject());
         garden.setName(g.getName());
-        return new ResponseEntity<>(repository.save(garden), HttpStatus.CREATED);
+        repository.save(garden);
+        return new ResponseEntity<>(garden, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/garden/{id}")
     public ResponseEntity deleteGarden(@PathVariable("id") int id, @AuthenticationPrincipal Jwt jwt)
     {
-        Garden g = repository.findById(id).orElseThrow(() -> new GardenNotFoundException(id));
-        if(jwt.getSubject().equals(g.getUserId()))
-        {
-            repository.deleteById(id);
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
-        }
-        else
-        {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+        Garden g = repository.findByIdAndUserId(id, jwt.getSubject()).orElseThrow(() -> new GardenNotFoundException(id));
+        repository.deleteById(id);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }
