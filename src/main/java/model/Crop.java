@@ -18,7 +18,9 @@ import static model.CropType.*;
 public class Crop
 {
 
-    public static ArrayList<CropType> cropCylcle = new ArrayList<>(Arrays.asList(LEAF, FRUIT, ROOT, LEGUMES));
+    public static final ArrayList<CropType> cropCylcle = new ArrayList<>(Arrays.asList(LEAF, FRUIT, ROOT, LEGUMES));
+
+    public static final int radius = 5;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,9 +33,13 @@ public class Crop
     @Length(max = 1000)
     private String description;
 
-    @Min(value = 1, message = "All crops must have at least 5cm diameter")
-    @Max(value = 40, message = "No crop can be larger than 2m")
-    private int diameter;
+    @Min(value = 1, message = "All crops must have at least 5cm width")
+    @Max(value = 40, message = "No crop can be wider than 2m")
+    private int width;
+
+    @Min(value = 1, message = "All crops must have at least 5cm length")
+    @Max(value = 40, message = "No crop can be longer than 2m")
+    private int length;
 
     @URL
     private String imageUrl;
@@ -63,7 +69,8 @@ public class Crop
     {
         this.name = other.name;
         this.description = other.description;
-        this.diameter = other.diameter;
+        this.width = other.width;
+        this.length = other.length;
         this.imageUrl = other.imageUrl;
         this.type = other.type;
     }
@@ -94,13 +101,24 @@ public class Crop
         this.description = description;
     }
 
-
-    public int getDiameter() {
-        return diameter;
+    public int getWidth()
+    {
+        return width;
     }
 
-    public void setDiameter(int diameter) {
-        this.diameter = diameter;
+    public void setWidth(int width)
+    {
+        this.width = width;
+    }
+
+    public int getLength()
+    {
+        return length;
+    }
+
+    public void setLength(int length)
+    {
+        this.length = length;
     }
 
     public String getImageUrl() {
@@ -169,7 +187,8 @@ public class Crop
         if (o == null || getClass() != o.getClass()) return false;
         Crop crop = (Crop) o;
         return id == crop.id &&
-                diameter == crop.diameter &&
+                length == crop.length &&
+                width == crop. width &&
                 name.equals(crop.name) &&
                 Objects.equals(description, crop.description) &&
                 Objects.equals(imageUrl, crop.imageUrl) &&
@@ -179,6 +198,6 @@ public class Crop
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, diameter, imageUrl, type, userId);
+        return Objects.hash(id, name, description, length, width, imageUrl, type, userId);
     }
 }

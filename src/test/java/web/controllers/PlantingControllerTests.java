@@ -54,14 +54,16 @@ public class PlantingControllerTests
         crop1.setUserId("demo");
         crop1.setType(CropType.FRUIT);
         crop1.setName("Tomato");
-        crop1.setDiameter(2);
+        crop1.setLength(2);
+        crop1.setWidth(2);
         crop1.setId(1);
 
         Crop crop2 = new Crop();
         crop2.setUserId("demo");
         crop2.setType(CropType.ROOT);
         crop2.setName("Carrot");
-        crop2.setDiameter(1);
+        crop2.setLength(1);
+        crop2.setWidth(1);
         crop2.setId(2);
 
         Companion companion1 = new Companion();

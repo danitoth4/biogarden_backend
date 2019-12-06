@@ -34,7 +34,8 @@ public class Application {
             Crop c = new Crop();
             c.setName("Tomato");
             c.setImageUrl("https://ui-ex.com/images/tomato-vector-svg-3.png");
-            c.setDiameter(2);
+            c.setWidth(2);
+            c.setLength(2);
             c.setUserId("admin");
             c.setType(CropType.FRUIT);
             for(Crop crop : repository.findAll())

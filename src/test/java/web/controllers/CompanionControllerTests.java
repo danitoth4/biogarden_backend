@@ -65,21 +65,24 @@ public class CompanionControllerTests
         crop1.setUserId("admin");
         crop1.setType(CropType.FRUIT);
         crop1.setName("Tomato");
-        crop1.setDiameter(2);
+        crop1.setLength(2);
+        crop1.setWidth(2);
         crop1.setId(1);
 
         crop2 = new Crop();
         crop2.setUserId("admin");
         crop2.setType(CropType.ROOT);
         crop2.setName("Carrot");
-        crop2.setDiameter(1);
+        crop2.setLength(1);
+        crop2.setWidth(1);
         crop2.setId(2);
 
         crop3 = new Crop();
         crop3.setUserId("admin");
         crop3.setType(CropType.LEAF);
         crop3.setName("Cabbage");
-        crop3.setDiameter(1);
+        crop3.setLength(1);
+        crop3.setWidth(1);
         crop3.setId(3);
 
         Companion companion1 = new Companion();

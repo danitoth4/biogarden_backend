@@ -202,28 +202,34 @@ public class GardenContent
             //checking if the plant fits there at least once
             int x = po.getX2() - po.getX1();
             int y = po.getY2() - po.getY1();
-            int dm = po.getCrop().getDiameter();
-            if (dm > x || dm > y)
+            int width = po.getCrop().getWidth();
+            int length = po.getCrop().getLength();
+            if (width > x || length > y)
             {
                 return false;
             }
             //how many times does it fit there in x direction and y direction
-            int i = x / dm;
-            int j = y / dm;
+            int i = x / width;
+            int j = y / length;
             for (int k = 0; k < i; ++k)
             {
                 for (int l = 0; l < j; ++l)
                 {
                     ConcreteCrop plantedCrop = new ConcreteCrop(po.getCrop());
                     plantedCrop.setGardenContent(this);
-                    plantedCrop.setStartX(po.getX1() + k * dm);
-                    plantedCrop.setStartY(po.getY1() + l * dm);
-                    plantedCrop.setEndX(plantedCrop.getStartX() + dm);
-                    plantedCrop.setEndY(plantedCrop.getStartY() + dm);
+                    plantedCrop.setStartX(po.getX1() + k * width);
+                    plantedCrop.setStartY(po.getY1() + l * length);
+                    plantedCrop.setEndX(plantedCrop.getStartX() + width);
+                    plantedCrop.setEndY(plantedCrop.getStartY() + length);
                     plantedCrop.setCropTypeId(plantedCrop.getCropType().getId());
-                    if(k == 0 || k == i - 1 || l == 0 ||l == j - 1)
+                    if(k * width - Crop.radius == 0 || k * width + Crop.radius >= i - 1
+                            || l * length - Crop.radius == 0 || l * length + Crop.radius >= j - 1)
                     plantedCropsList.stream().parallel().forEach(cc -> {
-                        if(Grid.isOverlapping(cc.getStartX(), cc.getStartY(), cc.getEndX(), cc.getEndY(), plantedCrop.getStartX() - dm, plantedCrop.getStartY() - dm, plantedCrop.getEndX() + dm, plantedCrop.getEndY() + dm))
+                        if(Grid.isOverlapping(cc.getStartX(), cc.getStartY(), cc.getEndX(), cc.getEndY(),
+                                plantedCrop.getStartX() - Crop.radius,
+                                plantedCrop.getStartY() - Crop.radius,
+                                plantedCrop.getEndX() + Crop.radius,
+                                plantedCrop.getEndY() + Crop.radius))
                         {
                             cc.addCompanionRecommendation(plantedCrop);
                             plantedCrop.addCompanionRecommendation(cc);

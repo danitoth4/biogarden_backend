@@ -59,14 +59,16 @@ public class CropControllerTests
         crop1.setUserId("admin");
         crop1.setType(CropType.FRUIT);
         crop1.setName("Tomato");
-        crop1.setDiameter(2);
+        crop1.setLength(2);
+        crop1.setWidth(2);
         crop1.setId(1);
 
         Crop crop2 = new Crop();
         crop2.setUserId("admin");
         crop2.setType(CropType.ROOT);
         crop2.setName("Carrot");
-        crop2.setDiameter(1);
+        crop2.setLength(1);
+        crop2.setWidth(1);
         crop2.setId(2);
 
         Companion companion = new Companion();
@@ -124,7 +126,8 @@ public class CropControllerTests
         updated.setUserId("admin");
         updated.setType(CropType.FRUIT);
         updated.setName("Tomato");
-        updated.setDiameter(2);
+        updated.setWidth(2);
+        updated.setLength(2);
         updated.setId(1);
 
         updated.setDescription("description change test");
@@ -149,7 +152,8 @@ public class CropControllerTests
         newCrop.setType(CropType.FRUIT);
         newCrop.setName("Potato");
         newCrop.setDescription("This is a test crop");
-        newCrop.setDiameter(2);
+        newCrop.setWidth(2);
+        newCrop.setLength(2);
         newCrop.setImageUrl("http://11.com");
 
         ObjectMapper mapper = new ObjectMapper();
