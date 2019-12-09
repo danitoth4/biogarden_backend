@@ -6,6 +6,8 @@ public class PlantingOperation {
 
     private Integer cropId;
 
+    private boolean rotated;
+
     private int x1;
 
     private int y1;
@@ -63,6 +65,16 @@ public class PlantingOperation {
 
     public void setY2(int y2) {
         this.y2 = y2;
+    }
+
+    public boolean isRotated()
+    {
+        return rotated;
+    }
+
+    public void setRotated(boolean rotated)
+    {
+        this.rotated = rotated;
     }
     //endregion
 }

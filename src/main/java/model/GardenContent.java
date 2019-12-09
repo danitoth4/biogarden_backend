@@ -1,7 +1,6 @@
 package model;
 
-import Misc.Cache;
-import Misc.Grid;
+//import Misc.Cache;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -25,7 +24,7 @@ public class GardenContent
 
     @JsonIgnore
     @Transient
-    private HashMap<Point, Integer> plantedCrops;
+    private CropMap plantedCrops;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
@@ -80,12 +79,12 @@ public class GardenContent
         this.plantedCropsList = plantedCropsList;
     }
 
-    public HashMap<Point, Integer> getPlantedCrops()
+    public CropMap getPlantedCrops()
     {
         return plantedCrops;
     }
 
-    public void setPlantedCrops(HashMap<Point, Integer> plantedCrops)
+    public void setPlantedCrops(CropMap plantedCrops)
     {
         this.plantedCrops = plantedCrops;
     }
@@ -137,16 +136,11 @@ public class GardenContent
         //first we check if the map is null
         if(plantedCrops == null)
         {
-            //try to get the value from the cache so it doesn't have to be created
-            plantedCrops = Cache.getCachedInstance(this.id);
-            if(plantedCrops == null)
+            //setting up the map manually. if the list loaded from the db already contains elements then fill them
+            plantedCrops = new CropMap();
+            for(ConcreteCrop cc : plantedCropsList)
             {
-                //setting up the map manually. if the list loaded from the db already contains elements then fill them
-                plantedCrops = new HashMap<>();
-                for(ConcreteCrop cc : plantedCropsList)
-                {
-                    addCropToMap(cc);
-                }
+                addCropToMap(cc);
             }
         }
     }
@@ -159,13 +153,14 @@ public class GardenContent
         {
             for(int j = cc.getStartY(); j < cc.getEndY(); ++j)
             {
-                plantedCrops.put(new Point(i, j), cc.getId());
+                plantedCrops.getConcreteCropMap().put(new Point(i, j), cc);
             }
         }
     }
 
     public Collection<ConcreteCrop> getPlantedCropsList(float zoom, int x1, int y1, int x2, int y2)
     {
+        System.out.println(System.currentTimeMillis());
         List<ConcreteCrop> zoomedList = plantedCropsList.stream().filter(cc -> (cc.getEndX() > x1 && cc.getEndY() > y1 && cc.getStartX() < x2 && cc.getStartY() < y2)).collect(Collectors.toList());
         zoomedList.forEach(cc -> {
             cc.setStartX(Math.round((cc.getStartX() - x1) / zoom));
@@ -188,26 +183,19 @@ public class GardenContent
         {
             return false;
         }
-        for (ConcreteCrop cc : plantedCropsList)
-        {
-            if (cc != null && Grid.isOverlapping(cc.getStartX(), cc.getStartY(), cc.getEndX(), cc.getEndY(), po.getX1(), po.getY1(), po.getX2(), po.getY2()))
-                return false;
-        }
+        //the user wants to plant somewhere thats already taken
+        if (!plantedCrops.getCropsOnSpace(po.getX1(), po.getX2(), po.getY1(), po.getY2()).isEmpty())
+            return false;
         try
         {
-            if (po.getCrop() == null)
-            {
-                return false;
-            }
-            //checking if the plant fits there at least once
+            //length and width of the planting
             int x = po.getX2() - po.getX1();
             int y = po.getY2() - po.getY1();
-            int width = po.getCrop().getWidth();
-            int length = po.getCrop().getLength();
-            if (width > x || length > y)
-            {
-                return false;
-            }
+
+            // get width and length of the crop based on rotation. If the crop is rotated its legnth becomes its width and vice versa
+            int width = po.isRotated() ? po.getCrop().getLength() : po.getCrop().getWidth();
+            int length = po.isRotated() ? po.getCrop().getWidth() : po.getCrop().getLength();
+
             //how many times does it fit there in x direction and y direction
             int i = x / width;
             int j = y / length;
@@ -215,29 +203,7 @@ public class GardenContent
             {
                 for (int l = 0; l < j; ++l)
                 {
-                    ConcreteCrop plantedCrop = new ConcreteCrop(po.getCrop());
-                    plantedCrop.setGardenContent(this);
-                    plantedCrop.setStartX(po.getX1() + k * width);
-                    plantedCrop.setStartY(po.getY1() + l * length);
-                    plantedCrop.setEndX(plantedCrop.getStartX() + width);
-                    plantedCrop.setEndY(plantedCrop.getStartY() + length);
-                    plantedCrop.setCropTypeId(plantedCrop.getCropType().getId());
-                    if(k * width - Crop.radius == 0 || k * width + Crop.radius >= i - 1
-                            || l * length - Crop.radius == 0 || l * length + Crop.radius >= j - 1)
-                    plantedCropsList.stream().parallel().forEach(cc -> {
-                        if(Grid.isOverlapping(cc.getStartX(), cc.getStartY(), cc.getEndX(), cc.getEndY(),
-                                plantedCrop.getStartX() - Crop.radius,
-                                plantedCrop.getStartY() - Crop.radius,
-                                plantedCrop.getEndX() + Crop.radius,
-                                plantedCrop.getEndY() + Crop.radius))
-                        {
-                            cc.addCompanionRecommendation(plantedCrop);
-                            plantedCrop.addCompanionRecommendation(cc);
-                        }
-                    });
-                    plantedCropsList.add(plantedCrop);
-                    addCropToMap(plantedCrop);
-                    addRotationRecommendations(plantedCrop);
+                    createCropAndRecommendations(po, k, l, width, length);
                 }
             }
             return true;
@@ -245,6 +211,31 @@ public class GardenContent
         {
             return false;
         }
+    }
+
+    private void createCropAndRecommendations(PlantingOperation po, int k, int l, int width, int length)
+    {
+        ConcreteCrop plantedCrop = new ConcreteCrop(po.getCrop());
+        plantedCrop.setGardenContent(this);
+        plantedCrop.setStartX(po.getX1() + k * width);
+        plantedCrop.setStartY(po.getY1() + l * length);
+        plantedCrop.setEndX(plantedCrop.getStartX() + width);
+        plantedCrop.setEndY(plantedCrop.getStartY() + length);
+        plantedCrop.setCropTypeId(plantedCrop.getCropType().getId());
+        if(k * width - Crop.radius == po.getX1() || k * width + Crop.radius >= po.getX2()
+                || l * length - Crop.radius == po.getY1() || l * length + Crop.radius >= po.getY2())
+                for(ConcreteCrop cc : plantedCrops.getCropsOnSpace(
+                        plantedCrop.getStartX() - Crop.radius,
+                        plantedCrop.getEndX() + Crop.radius,
+                        plantedCrop.getStartY() - Crop.radius,
+                        plantedCrop.getEndY() + Crop.radius))
+                {
+                    cc.addCompanionRecommendation(plantedCrop);
+                    plantedCrop.addCompanionRecommendation(cc);
+                }
+        plantedCropsList.add(plantedCrop);
+        addCropToMap(plantedCrop);
+        addRotationRecommendations(plantedCrop);
     }
 
     private void addRotationRecommendations(ConcreteCrop cc)
@@ -265,19 +256,14 @@ public class GardenContent
     {
         for(int i = startX; i <= endX; ++i)
         {
-            for(int j = startY; j <= endY; ++i)
+            for(int j = startY; j <= endY; ++j)
             {
                 Point p = new Point(i, j);
-                Integer onBeforeId = last.plantedCrops.get(p);
-                Integer onCurrentlyId = current.plantedCrops.get(p);
-                if(onBeforeId != null && onCurrentlyId != null)
+                ConcreteCrop onBefore = last.plantedCrops.getConcreteCropMap().get(p);
+                ConcreteCrop onCurrently = current.plantedCrops.getConcreteCropMap().get(p);
+                if(onCurrently != null && onBefore != null)
                 {
-                    ConcreteCrop onCurrently = current.plantedCropsList.stream().filter(cc -> cc.getId() == onCurrentlyId).findFirst().orElse(null);
-                    ConcreteCrop onBefore = last.plantedCropsList.stream().filter(cc -> cc.getId() == onBeforeId).findFirst().orElse(null);
-                    if(onCurrently != null)
-                    {
-                        onCurrently.addRotationRecommendation(onBefore, last.id);
-                    }
+                    onCurrently.addRotationRecommendation(onBefore, last.id);
                 }
             }
         }
@@ -311,7 +297,8 @@ public class GardenContent
         {
             return;
         }
-        for(ConcreteCrop cc : plantedCropsList.stream().filter(c -> Grid.isOverlapping(c.getStartX(), c.getStartY(), c.getEndX(), c.getEndY(), po.getX1(), po.getY1(), po.getX2(), po.getY2())).collect(Collectors.toList()))
+        initialize();
+        for(ConcreteCrop cc : plantedCrops.getCropsOnSpace(po.getX1(), po.getX2(), po.getY1(), po.getY2()))
         {
             plantedCropsList.remove(cc);
         }

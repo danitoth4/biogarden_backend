@@ -1,11 +1,9 @@
 package web.controllers;
 
-import Misc.Cache;
 import model.*;
 import model.repositories.ConcreteCropRepository;
 import model.repositories.CropRepository;
 import model.repositories.GardenContentRepository;
-import model.repositories.GardenRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,7 +11,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import web.errorhandling.ContentNotFoundException;
 import web.errorhandling.CropNotFoundException;
-import web.errorhandling.GardenNotFoundException;
 
 import java.util.*;
 
@@ -52,7 +49,6 @@ public class PlantingController {
         if(gardenContent.plantCrop(newPlant))
         {
             gardenContentRepository.save(gardenContent);
-            Cache.tryStoreGardeninCache(id, gardenContent.getPlantedCrops());
             return new ResponseEntity<>(gardenContent.getPlantedCropsList(zoomValue, x1, y1, x2, y2), HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -28,7 +28,7 @@ public class GardenController
     @GetMapping("/garden")
     public List<Garden> getGardens(@AuthenticationPrincipal Jwt jwt)
     {
-        return Lists.newArrayList(repository.findGardensByUserId(jwt.getSubject()));
+        return repository.findGardensByUserId(jwt.getSubject());
     }
 
     @GetMapping("/garden/{id}")
