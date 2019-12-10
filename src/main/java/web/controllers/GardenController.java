@@ -1,6 +1,6 @@
 package web.controllers;
 
-import com.google.common.collect.Lists;
+import model.repositories.GardenContentRepository;
 import model.repositories.GardenRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +8,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import model.*;
-import org.springframework.web.client.HttpClientErrorException;
 import web.errorhandling.GardenNotFoundException;
 
 import javax.validation.ConstraintViolationException;
@@ -20,9 +19,12 @@ public class GardenController
 {
     private final GardenRepository repository;
 
-    public GardenController(GardenRepository gardenRepository)
+    private final GardenContentRepository gardenContentRepository;
+
+    public GardenController(GardenRepository gardenRepository, GardenContentRepository gardenContentRepository)
     {
         this.repository = gardenRepository;
+        this.gardenContentRepository = gardenContentRepository;
     }
 
     @GetMapping("/garden")
@@ -51,6 +53,34 @@ public class GardenController
         {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("/garden/{gardenId}")
+    public ResponseEntity<Garden> postGardenContent(@PathVariable("gardenId") int gardenId, @Valid @RequestBody GardenContent gardenContent, @AuthenticationPrincipal Jwt jwt)
+    {
+        Garden garden = repository.findByIdAndUserId(gardenId, jwt.getSubject()).orElseThrow(() -> new GardenNotFoundException(gardenId));
+        gardenContent.setUserId(jwt.getSubject());
+        gardenContent.setGarden(garden);
+        garden.addToGardenContents(gardenContent);
+        if(gardenContent.getBefore() != null)
+        {
+            GardenContent before = gardenContentRepository.findByIdAndUserId(gardenContent.getBefore().getId(), jwt.getSubject()).orElse(null);
+            if(before != null)
+            {
+                before.setAfter(gardenContent);
+                gardenContent.setBefore(before);
+            }
+        }
+        if(gardenContent.getAfter() != null)
+        {
+            GardenContent after = gardenContentRepository.findByIdAndUserId(gardenContent.getAfter().getId(), jwt.getSubject()).orElse(null);
+            if(after != null)
+            {
+                after.setBefore(gardenContent);
+                gardenContent.setAfter(after);
+            }
+        }
+        return  new ResponseEntity<>(repository.save(garden), HttpStatus.CREATED);
     }
 
     @PostMapping("/garden")

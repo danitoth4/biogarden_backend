@@ -20,7 +20,7 @@ public class Crop
 
     public static final ArrayList<CropType> cropCylcle = new ArrayList<>(Arrays.asList(LEAF, FRUIT, ROOT, LEGUMES));
 
-    public static final int radius = 5;
+    public static final int radius = 8;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

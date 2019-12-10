@@ -85,9 +85,14 @@ public class Garden
         return gardenContents;
     }
 
-    public void setGardenContent(List<GardenContent> gardenContents)
+    public void setGardenContents(List<GardenContent> gardenContents)
     {
         this.gardenContents = gardenContents;
+    }
+
+    public boolean addToGardenContents(GardenContent gardenContent)
+    {
+        return gardenContents.add(gardenContent);
     }
 
     public String getUserId()

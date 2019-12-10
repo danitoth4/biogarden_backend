@@ -90,7 +90,7 @@ public class CropControllerTests
         mockMvc.perform(get("/crop").header("Authorization", "Bearer " + adminToken))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"id\":1,\"name\":\"Tomato\",\"description\":null,\"diameter\":2,\"imageUrl\":null,\"type\":\"FRUIT\",\"userId\":\"admin\"},{\"id\":2,\"name\":\"Carrot\",\"description\":null,\"diameter\":1,\"imageUrl\":null,\"type\":\"ROOT\",\"userId\":\"admin\"}]"));
+                .andExpect(content().json("[{\"id\":1,\"name\":\"Tomato\",\"description\":null,\"width\":2,\"length\":2,\"imageUrl\":null,\"type\":\"FRUIT\",\"userId\":\"admin\"},{\"id\":2,\"name\":\"Carrot\",\"description\":null,\"width\":1,\"length\":1,\"imageUrl\":null,\"type\":\"ROOT\",\"userId\":\"admin\"}]"));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class CropControllerTests
         mockMvc.perform(get("/crop").header("Authorization", "Bearer " + demoToken))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"id\":0,\"name\":\"Tomato\",\"description\":null,\"diameter\":2,\"imageUrl\":null,\"type\":\"FRUIT\",\"userId\":\"demo\"},{\"id\":0,\"name\":\"Carrot\",\"description\":null,\"diameter\":1,\"imageUrl\":null,\"type\":\"ROOT\",\"userId\":\"demo\"}]"));
+                .andExpect(content().json("[{\"id\":0,\"name\":\"Tomato\",\"description\":null,\"width\":2,\"length\":2,\"imageUrl\":null,\"type\":\"FRUIT\",\"userId\":\"demo\"},{\"id\":0,\"name\":\"Carrot\",\"description\":null,\"width\":1,\"length\":1,\"imageUrl\":null,\"type\":\"ROOT\",\"userId\":\"demo\"}]"));
     }
 
     @Test
@@ -108,7 +108,7 @@ public class CropControllerTests
         mockMvc.perform(get("/crop/1").header("Authorization", "Bearer " + adminToken))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"id\":1,\"name\":\"Tomato\",\"description\":null,\"diameter\":2,\"imageUrl\":null,\"type\":\"FRUIT\",\"userId\":\"admin\"}"));
+                .andExpect(content().json("{\"id\":1,\"name\":\"Tomato\",\"description\":null,\"width\":2,\"length\":2,\"imageUrl\":null,\"type\":\"FRUIT\",\"userId\":\"admin\"}"));
     }
 
     @Test

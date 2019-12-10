@@ -70,7 +70,7 @@ public class GardenControllerTests
         garden3.setId(3);
 
         when(gardenRepositoryMock.findGardensByUserId("demo")).thenReturn(List.of(new Garden[]{garden1, garden2}));
-        when(gardenRepositoryMock.findById(1)).thenReturn(Optional.of(garden1));
+        when(gardenRepositoryMock.findByIdAndUserId(1, "demo")).thenReturn(Optional.of(garden1));
     }
 
     @Test
@@ -125,17 +125,14 @@ public class GardenControllerTests
     {
         Garden newGarden = new Garden(1000, 1000, "");
         newGarden.setName("Test New Garden");
-
         ObjectMapper mapper = new ObjectMapper();
         String body = mapper.writeValueAsString(newGarden);
-
-        newGarden.setUserId("demo");
 
         when(gardenRepositoryMock.save(newGarden)).thenReturn(newGarden);
 
         mockMvc.perform(post("/garden").header("Authorization", "Bearer " + demoToken).header("Content-Type", "application/json").content(body))
                 .andDo(print())
-                .andExpect(status().isCreated()).andExpect(content().json(mapper.writeValueAsString(newGarden)));
+                .andExpect(status().isCreated());
     }
 
     @Test

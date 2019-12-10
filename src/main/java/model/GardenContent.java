@@ -2,6 +2,7 @@ package model;
 
 //import Misc.Cache;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.awt.*;
@@ -30,10 +31,12 @@ public class GardenContent
     @JsonIgnore
     private Garden garden;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "after")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "after", cascade = CascadeType.ALL)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private GardenContent before;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private GardenContent after;
 
     private String userId;
@@ -160,7 +163,6 @@ public class GardenContent
 
     public Collection<ConcreteCrop> getPlantedCropsList(float zoom, int x1, int y1, int x2, int y2)
     {
-        System.out.println(System.currentTimeMillis());
         List<ConcreteCrop> zoomedList = plantedCropsList.stream().filter(cc -> (cc.getEndX() > x1 && cc.getEndY() > y1 && cc.getStartX() < x2 && cc.getStartY() < y2)).collect(Collectors.toList());
         zoomedList.forEach(cc -> {
             cc.setStartX(Math.round((cc.getStartX() - x1) / zoom));
@@ -222,8 +224,8 @@ public class GardenContent
         plantedCrop.setEndX(plantedCrop.getStartX() + width);
         plantedCrop.setEndY(plantedCrop.getStartY() + length);
         plantedCrop.setCropTypeId(plantedCrop.getCropType().getId());
-        if(k * width - Crop.radius == po.getX1() || k * width + Crop.radius >= po.getX2()
-                || l * length - Crop.radius == po.getY1() || l * length + Crop.radius >= po.getY2())
+        if(k * width - Crop.radius == po.getX1() || (k + 1)* width + Crop.radius >= po.getX2()
+                || l * length - Crop.radius == po.getY1() || (l + 1) * length + Crop.radius >= po.getY2())
                 for(ConcreteCrop cc : plantedCrops.getCropsOnSpace(
                         plantedCrop.getStartX() - Crop.radius,
                         plantedCrop.getEndX() + Crop.radius,

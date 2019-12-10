@@ -2,7 +2,9 @@ package web.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import model.*;
+import model.repositories.CropRepository;
 import model.repositories.GardenContentRepository;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,15 +17,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import util.Helper;
-
-import javax.validation.constraints.AssertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -36,9 +36,16 @@ public class PlantingControllerTests
     @MockBean
     private GardenContentRepository gardenContentRepositoryMock;
 
+    @MockBean
+    private CropRepository cropRepositoryMock;
+
     private static String adminToken;
 
     private static String demoToken;
+
+    private Crop crop1;
+
+    private Crop crop2;
 
     @BeforeClass
     public static void setupTokens()
@@ -50,7 +57,7 @@ public class PlantingControllerTests
     @Before
     public void before()
     {
-        Crop crop1 = new Crop();
+        crop1 = new Crop();
         crop1.setUserId("demo");
         crop1.setType(CropType.FRUIT);
         crop1.setName("Tomato");
@@ -58,7 +65,7 @@ public class PlantingControllerTests
         crop1.setWidth(2);
         crop1.setId(1);
 
-        Crop crop2 = new Crop();
+        crop2 = new Crop();
         crop2.setUserId("demo");
         crop2.setType(CropType.ROOT);
         crop2.setName("Carrot");
@@ -73,27 +80,28 @@ public class PlantingControllerTests
         crop1.addToImpacts(companion1);
         companion1.setPositive(false);
 
-        Garden garden = new Garden(100, 100, "demo");
+        Garden garden = new Garden(8, 8, "demo");
         GardenContent gardenContent = garden.getGardenContents().get(0);
 
         List<ConcreteCrop> concreteCrops = new ArrayList<>();
-        for(int i = 40; i < 60; i += 2)
+        for(int i = 4; i < 8; i++)
         {
-            for (int j = 40; j < 60; j += 2)
+            for (int j = 4; j < 8; j++)
             {
                 ConcreteCrop cc = new ConcreteCrop();
-                cc.setCropTypeId(1);
-                cc.setCropType(crop1);
+                cc.setCropTypeId(2);
+                cc.setCropType(crop2);
                 cc.setStartX(i);
                 cc.setStartY(j);
-                cc.setEndX(i + 2);
-                cc.setEndY(j + 2);
+                cc.setEndX(i + 1);
+                cc.setEndY(j + 1);
                 cc.setGardenContent(gardenContent);
                 concreteCrops.add(cc);
             }
         }
         gardenContent.setPlantedCropsList(concreteCrops);
-
+        when(cropRepositoryMock.findById(2)).thenReturn(Optional.of(crop2));
+        when(cropRepositoryMock.findById(1)).thenReturn(Optional.of(crop1));
         when(gardenContentRepositoryMock.findByIdAndUserId(1, "demo")).thenReturn(Optional.of(gardenContent));
     }
 
@@ -102,17 +110,91 @@ public class PlantingControllerTests
     {
         MvcResult result = mockMvc.perform(get("/planting/1")
                 .header("Authorization", "Bearer " + demoToken)
-                .param("zoom", "4.0")
-                .param("startX", "0")
-                .param("startY", "0")
-                .param("endX", "60")
-                .param("endY", "60"))
+                .param("zoom", "2.0")
+                .param("startX", "2")
+                .param("startY", "2")
+                .param("endX", "6")
+                .param("endY", "6"))
                 .andDo(print())
                 .andReturn();
 
         ObjectMapper mapper = new ObjectMapper();
         List<ConcreteCrop> content = List.of(mapper.readValue(result.getResponse().getContentAsString(), ConcreteCrop[].class));
-        System.out.println("Hello World");
+        Assert.assertTrue(content.size() == 4);
     }
 
+    @Test
+    public void test_cant_plant_on_taken_space() throws Exception
+    {
+        PlantingOperation po = new PlantingOperation();
+        po.setX1(6);
+        po.setY1(6);
+        po.setY2(8);
+        po.setX2(8);
+        po.setCropId(2);
+        ObjectMapper mapper = new ObjectMapper();
+        String body = mapper.writeValueAsString(po);
+
+        MvcResult result = mockMvc.perform(post("/planting/1")
+                .header("Authorization", "Bearer " + demoToken)
+                .header("Content-Type", "application/json").content(body)
+                .param("zoom", "2.0")
+                .param("startX", "2")
+                .param("startY", "2")
+                .param("endX", "6")
+                .param("endY", "6"))
+                .andDo(print())
+                .andExpect(status().isBadRequest()).andReturn();
+    }
+
+    @Test
+    public void test_can_plant_on_empty_space() throws Exception
+    {
+        PlantingOperation po = new PlantingOperation();
+        po.setX1(0);
+        po.setY1(0);
+        po.setY2(4);
+        po.setX2(8);
+        po.setCropId(1);
+        ObjectMapper mapper = new ObjectMapper();
+        String body = mapper.writeValueAsString(po);
+
+        MvcResult result = mockMvc.perform(post("/planting/1")
+                .header("Authorization", "Bearer " + demoToken)
+                .header("Content-Type", "application/json").content(body)
+                .param("zoom", "1.0")
+                .param("startX", "0")
+                .param("startY", "0")
+                .param("endX", "8")
+                .param("endY", "8"))
+                .andDo(print()).andExpect(status().isCreated()).andReturn();
+
+        List<ConcreteCrop> content = List.of(mapper.readValue(result.getResponse().getContentAsString(), ConcreteCrop[].class));
+        Assert.assertTrue(content.size() == 24);
+    }
+
+    @Test
+    public void test_can_delete_crop() throws Exception
+    {
+        PlantingOperation po = new PlantingOperation();
+        po.setX1(0);
+        po.setY1(0);
+        po.setY2(8);
+        po.setX2(8);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String body = mapper.writeValueAsString(po);
+
+        MvcResult result = mockMvc.perform(delete("/planting/1")
+                .header("Authorization", "Bearer " + demoToken)
+                .header("Content-Type", "application/json").content(body)
+                .param("zoom", "1.0")
+                .param("startX", "0")
+                .param("startY", "0")
+                .param("endX", "8")
+                .param("endY", "8"))
+                .andDo(print()).andExpect(status().isOk()).andReturn();
+        List<ConcreteCrop> content = List.of(mapper.readValue(result.getResponse().getContentAsString(), ConcreteCrop[].class));
+        Assert.assertTrue(content.size() == 0);
+    }
 }

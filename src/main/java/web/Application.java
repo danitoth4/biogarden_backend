@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
@@ -27,32 +29,6 @@ public class Application {
     }
 
     @Bean
-    public CommandLineRunner demo(CropRepository repository)
-    {
-        return (args) ->
-        {
-            Crop c = new Crop();
-            c.setName("Tomato");
-            c.setImageUrl("https://ui-ex.com/images/tomato-vector-svg-3.png");
-            c.setWidth(2);
-            c.setLength(2);
-            c.setUserId("admin");
-            c.setType(CropType.FRUIT);
-            for(Crop crop : repository.findAll())
-            {
-                Companion comp = new Companion();
-                comp.setPositive(crop.getId() == 2);
-                comp.setImpacted(crop);
-                comp.setImpacting(c);
-                c.addToImpacts(comp);
-            }
-
-            repository.save(c);
-        };
-
-    }
-
-    @Bean
     public WebMvcConfigurer corsConfigurer()
     {
         return new WebMvcConfigurer()
@@ -61,6 +37,12 @@ public class Application {
             public void addCorsMappings(CorsRegistry registry)
             {
                 registry.addMapping("/**").allowedOrigins("http://localhost:5001", "http://localhost:3000").allowedMethods("PUT", "POST", "GET", "DELETE", "OPTIONS");
+            }
+
+            @Override
+            public void addResourceHandlers(final ResourceHandlerRegistry registry)
+            {
+                registry.addResourceHandler("/images/*").addResourceLocations("file:///C:/git/biogarden_backend/src/main/resources/static/images/");
             }
         };
     }

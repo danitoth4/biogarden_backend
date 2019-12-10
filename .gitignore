@@ -88,3 +88,4 @@ fabric.properties
 
 # Let's not commit this
 **/keystore
+coverage/

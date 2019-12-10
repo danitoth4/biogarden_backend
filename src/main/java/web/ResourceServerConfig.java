@@ -14,6 +14,7 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "**").permitAll()
+                .antMatchers("/images/*").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .oauth2ResourceServer()
